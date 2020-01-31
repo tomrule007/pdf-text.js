@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 
 import FileInput from './FileInput';
 import PdfTextViewer from './components/PdfTextViewer';
+import PdfComponent from './components/PDF';
 
 function App() {
   const [invoiceFolder, setInvoiceFolder] = useState([]);
@@ -15,9 +16,12 @@ function App() {
       <FileInput onChange={handleFileInputChange}></FileInput>
       <ol>
         {invoiceFolder.map(file => (
-          <li key={file.name}>
-            <PdfTextViewer file={file} />
-          </li>
+          <div>
+            <PdfComponent file={file} />
+            <li key={file.name}>
+              <PdfTextViewer file={file} />
+            </li>
+          </div>
         ))}
       </ol>
     </div>
