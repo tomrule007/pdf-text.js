@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 
 import FileInput from './FileInput';
 import PDF from './components/PDF';
+import PDFtext from './components/PDFtext';
 function App() {
   const helloWorld = `${process.env.PUBLIC_URL}/helloworld.pdf`;
 
@@ -18,6 +19,7 @@ function App() {
     <div className="App">
       <FileInput onChange={handleFileInputChange}></FileInput>
       <PDF src={invoiceFolder[0]} />
+      <PDFtext src={invoiceFolder[0]} />
       <ul>
         {invoiceFolder.map(invoice => (
           <li>{invoice.name}</li>
