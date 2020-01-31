@@ -1,5 +1,10 @@
 import React, { useState } from 'react';
+import pdfjs from 'pdfjs-dist';
+import pdfjsWorker from 'pdfjs-dist/build/pdf.worker.entry';
+
 import FileInput from './FileInput';
+
+pdfjs.GlobalWorkerOptions.workerSrc = pdfjsWorker;
 function App() {
   const [invoiceFolder, setInvoiceFolder] = useState([]);
   console.log('something');
