@@ -1,31 +1,25 @@
 import React, { useState } from 'react';
 
 import FileInput from './FileInput';
-import PDF from './components/PDF';
-import pdfText from './utilities/pdfText';
+import PdfTextViewer from './components/PdfTextViewer';
+
 function App() {
-  const helloWorld = `${process.env.PUBLIC_URL}/helloworld.pdf`;
-
-  const [invoiceFolder, setInvoiceFolder] = useState([helloWorld]);
-
-  pdfText(invoiceFolder[0]).then(text => console.log(text));
+  const [invoiceFolder, setInvoiceFolder] = useState([]);
 
   const handleFileInputChange = e => {
-    e.target.files[0].arrayBuffer().then(data => {
-      console.log(data);
-      setInvoiceFolder([{ data }]);
-    });
+    setInvoiceFolder([...e.target.files]);
   };
 
   return (
     <div className="App">
       <FileInput onChange={handleFileInputChange}></FileInput>
-      <PDF src={invoiceFolder[0]} />
-      <ul>
-        {invoiceFolder.map(invoice => (
-          <li>{invoice.name}</li>
+      <ol>
+        {invoiceFolder.map(file => (
+          <li key={file.name}>
+            <PdfTextViewer file={file} />
+          </li>
         ))}
-      </ul>
+      </ol>
     </div>
   );
 }
