@@ -6,12 +6,14 @@ import pdfjsWorker from 'pdfjs-dist/build/pdf.worker.entry';
 
 pdfjs.GlobalWorkerOptions.workerSrc = pdfjsWorker;
 
-const PdfComponent = ({ src }) => {
+const PdfComponent = ({ file }) => {
   const canvasRef = useRef(null);
 
   useEffect(() => {
     const fetchPdf = async () => {
-      const loadingTask = pdfjs.getDocument(src);
+      const pdfData = await file.arrayBuffer();
+      console.log(pdfData);
+      const loadingTask = pdfjs.getDocument({ data: pdfData });
 
       const pdf = await loadingTask.promise;
 
@@ -39,8 +41,8 @@ const PdfComponent = ({ src }) => {
       await renderTask.promise;
     };
 
-    fetchPdf();
-  }, [src]);
+    if (file !== undefined) fetchPdf();
+  }, [file]);
 
   return (
     <canvas
@@ -52,11 +54,7 @@ const PdfComponent = ({ src }) => {
 };
 
 PdfComponent.propTypes = {
-  src: PropTypes.string
-};
-
-PdfComponent.defaultProps = {
-  src: `${process.env.PUBLIC_URL}/helloworld.pdf`
+  file: PropTypes.object
 };
 
 export default PdfComponent;
