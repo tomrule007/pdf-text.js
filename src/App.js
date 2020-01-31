@@ -1,22 +1,23 @@
 import React, { useState } from 'react';
-// import pdfjs from 'pdfjs-dist';
-// import pdfjsWorker from 'pdfjs-dist/build/pdf.worker.entry';
 
 import FileInput from './FileInput';
 import PDF from './components/PDF';
-
-// pdfjs.GlobalWorkerOptions.workerSrc = pdfjsWorker;
 function App() {
-  const [invoiceFolder, setInvoiceFolder] = useState([]);
-  console.log('something');
+  const helloWorld = `${process.env.PUBLIC_URL}/helloworld.pdf`;
+
+  const [invoiceFolder, setInvoiceFolder] = useState([helloWorld]);
+
   const handleFileInputChange = e => {
-    console.log('handleFileInputChange');
-    setInvoiceFolder([...e.target.files]);
+    e.target.files[0].arrayBuffer().then(data => {
+      console.log(data);
+      setInvoiceFolder([{ data }]);
+    });
   };
+
   return (
     <div className="App">
       <FileInput onChange={handleFileInputChange}></FileInput>
-      <PDF />
+      <PDF src={invoiceFolder[0]} />
       <ul>
         {invoiceFolder.map(invoice => (
           <li>{invoice.name}</li>
