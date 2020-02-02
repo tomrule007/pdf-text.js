@@ -39,6 +39,27 @@ const PdfComponent = ({ file }) => {
       const renderTask = page.render(renderContext);
 
       await renderTask.promise;
+
+      const convertToCanvasCoords = (scale, [x, y, width, height]) => {
+        return [x * scale, (y - height) * scale, width * scale, height * scale];
+      };
+
+      const pageTextContent = await page.getTextContent({
+        disableCombineTextItems: false
+      });
+      console.log(pageTextContent);
+      const START_ITEM = 60;
+      const END_ITEM = 80;
+      for (let i = START_ITEM; i < END_ITEM; i++) {
+        const item = pageTextContent.items[i];
+        console.log(item);
+        const { width, height } = item;
+        const y = item.transform[4];
+        const x = item.transform[5];
+        context.strokeRect(
+          ...convertToCanvasCoords(scale, [x, y, width, height])
+        );
+      }
     };
 
     if (file !== undefined) fetchPdf();
