@@ -12,8 +12,10 @@ const PdfComponent = ({ file }) => {
   useEffect(() => {
     const fetchPdf = async () => {
       const pdfData = await file.arrayBuffer();
-      console.log(pdfData);
-      const loadingTask = pdfjs.getDocument({ data: pdfData });
+      const loadingTask = pdfjs.getDocument({
+        data: pdfData
+        //  disableFontFace: true
+      });
 
       const pdf = await loadingTask.promise;
 
@@ -30,6 +32,23 @@ const PdfComponent = ({ file }) => {
       const context = canvas.getContext('2d');
       canvas.height = viewport.height;
       canvas.width = viewport.width;
+
+      //START: garysieling.com
+      function replace(ctx, key) {
+        var val = ctx[key];
+        if (typeof val == 'function') {
+          ctx[key] = function() {
+            var args = Array.prototype.slice.call(arguments);
+            console.log('Called ' + key + '(' + args.join(',') + ')');
+            return val.apply(ctx, args);
+          };
+        }
+      }
+
+      for (var k in context) {
+        replace(context, k);
+      }
+      //END: : garysieling.com
 
       // Render PDF page into canvas context
       const renderContext = {
@@ -48,8 +67,8 @@ const PdfComponent = ({ file }) => {
         disableCombineTextItems: false
       });
       console.log(pageTextContent);
-      const START_ITEM = 60;
-      const END_ITEM = 80;
+      const START_ITEM = 0;
+      const END_ITEM = 100;
       for (let i = START_ITEM; i < END_ITEM; i++) {
         const item = pageTextContent.items[i];
         console.log(item);
