@@ -39,7 +39,31 @@ const PdfComponent = ({ file }) => {
         if (typeof val == 'function') {
           ctx[key] = function() {
             var args = Array.prototype.slice.call(arguments);
-            console.log('Called ' + key + '(' + args.join(',') + ')');
+            const CHAR_CODE_OFFSET = 57344;
+            if (key === 'fillText') {
+              // args[0] = 'A';
+              console.log(
+                `character: ${args[0]}, charCodeAt: ${args[0].charCodeAt(
+                  0
+                )}x: ${args[1]}, y: ${args[2]}, realChar: ${String.fromCharCode(
+                  args[0].charCodeAt(0) - CHAR_CODE_OFFSET
+                )}, mesaure: ${ctx.measureText(args[0]).width} mesaureOffset: ${
+                  ctx.measureText(
+                    String.fromCharCode(
+                      args[0].charCodeAt(0) - CHAR_CODE_OFFSET
+                    )
+                  ).width
+                } next X = ${args[1] +
+                  ctx.measureText(args[0]).width} offsetCharNextX = ${args[1] +
+                  ctx.measureText(
+                    String.fromCharCode(
+                      args[0].charCodeAt(0) - CHAR_CODE_OFFSET
+                    )
+                  ).width} TRANSFORM: ${ctx.getTransform()}`
+              );
+            } else {
+              console.log(`${key}(${args})`);
+            }
             return val.apply(ctx, args);
           };
         }
