@@ -21,7 +21,7 @@ const pdfText = async src => {
     for (let j = 0; j < pageTextContent.items.length; j++) {
       const item = pageTextContent.items[j];
       const allowedVariance = 1;
-      const y = item.transform[4];
+      const y = page.rotate === 90 ? item.transform[4] : item.transform[5];
       if (
         y === null ||
         y === lastYcord ||
