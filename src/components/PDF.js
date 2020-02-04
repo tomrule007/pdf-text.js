@@ -42,27 +42,8 @@ const PdfComponent = ({ file }) => {
             const CHAR_CODE_OFFSET = 57344;
             if (key === 'fillText') {
               // args[0] = 'A';
-              console.log(
-                `character: ${args[0]}, charCodeAt: ${args[0].charCodeAt(
-                  0
-                )}x: ${args[1]}, y: ${args[2]}, realChar: ${String.fromCharCode(
-                  args[0].charCodeAt(0) - CHAR_CODE_OFFSET
-                )}, mesaure: ${ctx.measureText(args[0]).width} mesaureOffset: ${
-                  ctx.measureText(
-                    String.fromCharCode(
-                      args[0].charCodeAt(0) - CHAR_CODE_OFFSET
-                    )
-                  ).width
-                } next X = ${args[1] +
-                  ctx.measureText(args[0]).width} offsetCharNextX = ${args[1] +
-                  ctx.measureText(
-                    String.fromCharCode(
-                      args[0].charCodeAt(0) - CHAR_CODE_OFFSET
-                    )
-                  ).width} TRANSFORM: ${ctx.getTransform()}`
-              );
             } else {
-              console.log(`${key}(${args})`);
+              //   console.log(`${key}(${args})`);
             }
             return val.apply(ctx, args);
           };
@@ -90,15 +71,16 @@ const PdfComponent = ({ file }) => {
       const pageTextContent = await page.getTextContent({
         disableCombineTextItems: false
       });
-      console.log(pageTextContent);
+      // console.log(pageTextContent);
       const START_ITEM = 0;
       const END_ITEM = 100;
       for (let i = START_ITEM; i < END_ITEM; i++) {
         const item = pageTextContent.items[i];
-        console.log(item);
+        if (item === undefined) break;
+        //   console.log(item);
         const { width, height } = item;
-        const y = item.transform[4];
-        const x = item.transform[5];
+        const y = page.rotate === 90 ? item.transform[4] : item.transform[5];
+        const x = page.rotate === 90 ? item.transform[5] : item.transform[4];
         context.strokeRect(
           ...convertToCanvasCoords(scale, [x, y, width, height])
         );
