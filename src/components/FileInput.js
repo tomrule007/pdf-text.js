@@ -4,7 +4,7 @@ export default function FileInput({ onChange }) {
   return (
     <div>
       <label>
-        Select your OGC invoice folder:
+        Select a pdf file:
         <input type="file" onChange={onChange} accept=".pdf" />
       </label>
     </div>
