@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 
-import FileInput from './FileInput';
+import FileInput from './components/FileInput';
 import PdfTextViewer from './components/PdfTextViewer';
 import PdfComponent from './components/PDF';
 
