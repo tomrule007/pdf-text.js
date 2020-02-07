@@ -1,7 +1,3 @@
-const CHAR_CODE_OFFSET = 57344; //sales invoice
-var chars = [];
-var cur = {};
-
 /**
  * fillTextIntercept modified a canvas context object to intercept all calls to 'fillText' and recorder results into an array
  * Inspired by: https://www.garysieling.com/blog/extracting-tables-from-pdfs-in-javascript-with-pdf-js
@@ -10,27 +6,37 @@ var cur = {};
  * @param {Boolean} debug Set to true to draw boxes around each 'fillText' call
  */
 export default function fillTextIntercept(ctx, debug = false) {
+  const chars = [];
+  // Save reference to the real fillText function
   var fillText = ctx.fillText;
 
-  ctx.fillText = function(...args) {
-    var c = args[0];
-    cur.c = c;
-    cur.code = c.charCodeAt(0);
-    cur.realChar = String.fromCharCode(cur.code - CHAR_CODE_OFFSET);
-    cur.width = ctx.measureText(c).width;
-    cur.height = cur.width; // Temporary solution is to draw a square box (height = width) since I don't know how to get real height.
-    cur.x = args[1];
-    cur.y = args[2];
-    chars[chars.length] = cur;
+  ctx.fillText = function(text, x, y) {
+    const code = text.charCodeAt(0);
+
+    // Unknown character encoding issue that is solved with this offset (for my specific pdf)
+    const CHAR_CODE_OFFSET = 57344; //sales invoice
+    const realCode = code - CHAR_CODE_OFFSET;
+    const realChar = String.fromCharCode(realCode);
+    const width = ctx.measureText(text).width;
+
+    // Store Character info in chars array
+    chars[chars.length] = {
+      text,
+      realChar,
+      x: ctx._transformMatrix[4] + x,
+      y: ctx._transformMatrix[5] + y,
+      width,
+      code,
+      realCode
+    };
 
     if (debug) {
-      ctx.strokeRect(...[cur.x, cur.y - cur.height, cur.width, cur.height]);
-      console.log(cur);
+      const height = width; // Temporary solution is to draw a square box (height = width) since I don't know how to get real height.
+      ctx.strokeRect(x, y - height, width, height);
     }
 
-    cur = {};
-
-    return fillText.apply(ctx, args);
+    // Call real filltext function
+    fillText.apply(ctx, [text, x, y]);
   };
 
   return chars;
