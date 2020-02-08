@@ -13,6 +13,7 @@ const PdfComponent = ({ file }) => {
   const canvasRef = useRef(null);
   const fabricCanvasRef = useRef(null);
   const [charInfo, setCharInfo] = useState([]);
+  const [tableCords, setTableCords] = useState(null);
   useEffect(() => {
     const fetchPdf = async () => {
       const pdfData = await file.arrayBuffer();
@@ -51,63 +52,64 @@ const PdfComponent = ({ file }) => {
       setCharInfo(charArray);
       // convert canvas to background image to import into fabric canvas
       const bg = canvas.toDataURL('image/png');
-      const fabricCanvas = new fabric.Canvas(fabricCanvasRef.current);
+      const fabricCanvas = new fabric.Canvas(fabricCanvasRef.current, {
+        width: viewport.width,
+        height: viewport.height
+      });
       fabricCanvas.setBackgroundImage(
         bg,
         fabricCanvas.renderAll.bind(fabricCanvas)
       );
-      var circle = new fabric.Circle({
-        radius: 20,
-        fill: 'green',
+      var rect = new fabric.Rect({
         left: 100,
-        top: 100
+        top: 100,
+        strokeWidth: 3,
+        stroke: 'red',
+        fill: 'rgba(0,0,0,0)',
+        strokeUniform: true,
+        width: 200,
+        height: 200
       });
-      var itext = new fabric.IText('This is a IText object', {
-        left: 100,
-        top: 150,
-        fill: '#D81B60',
-        strokeWidth: 2,
-        stroke: '#880E4F'
+      fabricCanvas.add(rect);
+      fabricCanvas.on('object:modified', e => {
+        var o = e.target;
+        //   console.log(o.aCoords);
+        setTableCords(o.aCoords);
       });
-      var itextTwo = new fabric.IText('This is a IText object', {
-        left: 100,
-        top: 150,
-        fill: '#D81B60',
-        strokeWidth: 2,
-        stroke: '#880E4F'
-      });
-      var line = new fabric.Line([20, 0, 20, viewport.height], {
-        left: 100,
-        top: 150,
-        stroke: 'red'
-      });
-      var columnMarker = new fabric.Group([line, itext], {
-        left: 100,
-        top: 100
-      });
-      fabricCanvas.add(columnMarker, itextTwo);
-
-      console.log(charArray);
+      // console.log(charArray);
     };
 
     if (file !== undefined) fetchPdf();
   }, [file]);
 
+  const tableChars = charInfo.filter(char => {
+    const isInbounds =
+      tableCords &&
+      char.y >= tableCords.tl.y &&
+      char.y <= tableCords.bl.y &&
+      char.x <= tableCords.tr.x &&
+      char.x >= tableCords.tl.x;
+    // console.log(char.y, isInbounds);
+    return isInbounds;
+  });
   return (
     <>
       <canvas
         ref={canvasRef}
         width={window.innerWidth}
         height={window.innerHeight}
+        style={{ display: 'none' }}
       />
-      <canvas
-        ref={fabricCanvasRef}
-        width={window.innerWidth}
-        height={window.innerHeight}
-      />
+      <canvas ref={fabricCanvasRef} width={500} height={500} />
+      <p>
+        Total Chars: {charInfo.length} Table Chars: {tableChars.length}
+      </p>
+      <p>table boundaries: {JSON.stringify(tableCords)}</p>
       <ul>
-        {charInfo.map(char => (
-          <li>{`${char.realChar} ${char.x} ${char.y}`}</li>
+        {tableChars.map(char => (
+          <li>{`${char.realChar} (x: ${char.x.toFixed(2)} y: ${char.y.toFixed(
+            2
+          )})`}</li>
         ))}
       </ul>
     </>

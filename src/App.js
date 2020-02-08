@@ -3,6 +3,7 @@ import React, { useState } from 'react';
 import FileInput from './components/FileInput';
 import PdfTextViewer from './components/PdfTextViewer';
 import PdfComponent from './components/PDF';
+import TemplateCreator from './components/TemplateCreator';
 
 function App() {
   const [invoiceFolder, setInvoiceFolder] = useState([]);
@@ -17,10 +18,7 @@ function App() {
       <ol>
         {invoiceFolder.map(file => (
           <div>
-            <PdfComponent file={file} />
-            <li key={file.name}>
-              <PdfTextViewer file={file} />
-            </li>
+            <TemplateCreator file={file} />
           </div>
         ))}
       </ol>
