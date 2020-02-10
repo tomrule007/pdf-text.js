@@ -13,8 +13,14 @@ const PdfComponent = ({ file }) => {
   const canvasRef = useRef(null);
   const fabricCanvasRef = useRef(null);
   const [charInfo, setCharInfo] = useState([]);
-  const [tableCords, setTableCords] = useState(null);
-  const [templateCanvas, setTemplateCanvas] = useState(null);
+  const [template, setTemplate] = useState({
+    top: null,
+    left: null,
+    bottom: null,
+    right: null,
+    columns: []
+  });
+
   useEffect(() => {
     const fetchPdf = async () => {
       const pdfData = await file.arrayBuffer();
@@ -39,7 +45,7 @@ const PdfComponent = ({ file }) => {
       canvas.height = viewport.height;
       canvas.width = viewport.width;
 
-      const charArray = fillTextIntercept(context, true);
+      const charArray = fillTextIntercept(context);
 
       // Render PDF page into canvas context
       const renderContext = {
@@ -61,7 +67,7 @@ const PdfComponent = ({ file }) => {
         bg,
         fabricCanvas.renderAll.bind(fabricCanvas)
       );
-      setTemplateCanvas(fabricCanvas);
+
       var rect = new fabric.Rect({
         name: 'table',
         left: 100,
@@ -69,36 +75,62 @@ const PdfComponent = ({ file }) => {
         strokeWidth: 2,
         stroke: 'red',
         fill: 'rgba(0,0,0,0)',
+        cornerColor: 'rgba(0,0,0,1)',
         strokeUniform: true,
         width: 200,
-        height: 200
+        height: 200,
+        transparentCorners: false,
+        hasBorders: false
+      });
+
+      rect.setControlsVisibility({
+        mt: true,
+        mb: true,
+        ml: true,
+        mr: true,
+        bl: false,
+        br: false,
+        tl: false,
+        tr: false,
+        mtr: false
       });
       fabricCanvas.add(rect);
+
+      let columns = template.columns;
+      let top = template.top;
+      let left = template.left;
+      let bottom = template.bottom;
+      let right = template.right;
+
       fabricCanvas.on('object:modified', e => {
         var o = e.target;
         //   console.log(o.aCoords);
-        setTableCords(o.aCoords);
+        if (o.name === 'table') {
+          top = o.aCoords.tl.y;
+          left = o.aCoords.tl.x;
+          bottom = o.aCoords.br.y;
+          right = o.aCoords.br.x;
+
+          setTemplate({ top, left, bottom, right, columns });
+        }
       });
-      function makeLine(coords) {
-        return new fabric.Line(coords, {
-          fill: 'red',
-          stroke: 'red',
-          strokeWidth: 2,
-          selectable: true,
-          evented: false
-        });
-      }
       fabricCanvas.on('mouse:down', e => {
         if (e.e.shiftKey && e.target && e.target.name === 'table') {
           console.log('add line!');
           var { x } = e.pointer;
           const top = e.target.aCoords.tl.y;
           const bottom = e.target.aCoords.bl.y;
-          console.log({ top, bottom });
-          var line = makeLine([x, top, x, bottom]);
+          var line = new fabric.Line([x, top, x, bottom], {
+            fill: 'red',
+            stroke: 'red',
+            strokeWidth: 2,
+            selectable: true
+            //evented: false
+          });
           fabricCanvas.add(line);
+          columns = [...columns, x].sort();
+          setTemplate({ top, left, bottom, right, columns });
         }
-        console.log('mouse down: ', e);
       });
       // console.log(charArray);
     };
@@ -108,37 +140,28 @@ const PdfComponent = ({ file }) => {
 
   const tableChars = charInfo.filter(char => {
     const isInbounds =
-      tableCords &&
-      char.y >= tableCords.tl.y &&
-      char.y <= tableCords.bl.y &&
-      char.x <= tableCords.tr.x &&
-      char.x >= tableCords.tl.x;
+      template.top &&
+      char.y >= template.top &&
+      char.y <= template.bottom &&
+      char.x <= template.right &&
+      char.x >= template.left;
     // console.log(char.y, isInbounds);
     return isInbounds;
   });
 
-  const addColumn = columnId => {
-    console.log('add column');
-  };
-  const addValidation = columnId => {
-    console.log('add validation');
-  };
-  const addTable = columnId => {
-    console.log('add table');
-    const start = new fabric.Line([100, 100, 200, 100], {
-      fill: 'red',
-      stroke: 'red',
-      strokeWidth: 2,
-      selectable: true,
-      evented: false
-    });
-    templateCanvas && templateCanvas.add(start);
-  };
+  const columnChars = tableChars.reduce((acc, char) => {
+    const { x } = char;
+    const columnID = template.columns.findIndex(columnX => x < columnX);
+
+    acc[columnID] =
+      acc[columnID] === undefined ? [char] : [...acc[columnID], char];
+
+    return acc;
+  }, []);
+  console.log({ columnChars });
+
   return (
     <>
-      <button onClick={addTable}>Add Table start / stop</button>
-      <button onClick={addColumn}>Add Column Marker</button>
-      <button onClick={addValidation}>Add ValidationBox</button>
       <canvas
         ref={canvasRef}
         width={window.innerWidth}
@@ -149,7 +172,10 @@ const PdfComponent = ({ file }) => {
       <p>
         Total Chars: {charInfo.length} Table Chars: {tableChars.length}
       </p>
-      <p>table boundaries: {JSON.stringify(tableCords)}</p>
+      <p>table boundaries: {JSON.stringify(template)}</p>
+      {columnChars.map((_, columnIndex) => (
+        <span>{`Column Index ${columnIndex}`}</span>
+      ))}
       <ul>
         {tableChars.map(char => (
           <li>{`${char.realChar} (x: ${char.x.toFixed(2)} y: ${char.y.toFixed(
