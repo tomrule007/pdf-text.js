@@ -37,7 +37,7 @@ const pdfText = async src => {
 
     await renderTask.promise;
 
-    data.pages[i] = charArray;
+    data.pages[i - 1] = charArray;
   }
 
   return data;
