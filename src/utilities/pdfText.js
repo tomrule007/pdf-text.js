@@ -1,44 +1,46 @@
 import pdfjs from 'pdfjs-dist';
 import pdfjsWorker from 'pdfjs-dist/build/pdf.worker.entry';
 
+import fillTextIntercept from './fillTextIntercept';
+
 pdfjs.GlobalWorkerOptions.workerSrc = pdfjsWorker;
 
 const pdfText = async src => {
-  console.log(src);
-  const textContent = [];
   const loadingTask = pdfjs.getDocument(src);
 
   const pdf = await loadingTask.promise;
-  console.log(pdf);
+
+  const data = { pages: [], numPages: pdf.numPages };
 
   for (let i = 1; i <= pdf.numPages; i++) {
+    console.log('building page ', i);
     const page = await pdf.getPage(i);
-    const pageTextContent = await page.getTextContent();
-    // const pageJustTextArray = pageTextContent.items.map(item => item.str);
-    let pageTextArray = [];
-    let currentRow = [];
-    let lastYcord = null;
-    for (let j = 0; j < pageTextContent.items.length; j++) {
-      const item = pageTextContent.items[j];
-      const allowedVariance = 1;
-      const y = page.rotate === 90 ? item.transform[4] : item.transform[5];
-      if (
-        y === null ||
-        y === lastYcord ||
-        (y < lastYcord && y > lastYcord - allowedVariance) ||
-        (y > lastYcord && y < lastYcord + allowedVariance)
-      ) {
-        currentRow.push(item.str);
-      } else {
-        pageTextArray.push([...currentRow]);
-        currentRow = [item.str];
-      }
-      lastYcord = y;
-    }
-    textContent.push(...pageTextArray);
+
+    const scale = 1.5;
+    const viewport = page.getViewport({ scale: scale });
+
+    // Prepare canvas using PDF page dimensions
+    const canvas = document.createElement('canvas');
+    const context = canvas.getContext('2d');
+    canvas.height = viewport.height;
+    canvas.width = viewport.width;
+
+    // Replace context fillText method and get reference to charArray.
+    const charArray = fillTextIntercept(context, true);
+
+    // Render PDF page into canvas context
+    const renderContext = {
+      canvasContext: context,
+      viewport: viewport
+    };
+    const renderTask = page.render(renderContext);
+
+    await renderTask.promise;
+
+    data.pages[i] = charArray;
   }
 
-  return textContent;
+  return data;
 };
 
 export default pdfText;
