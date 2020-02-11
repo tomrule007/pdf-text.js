@@ -178,7 +178,7 @@ const PdfComponent = ({ file }) => {
       ))}
       <ul>
         {tableChars.map(char => (
-          <li>{`${char.realChar} (x: ${char.x.toFixed(2)} y: ${char.y.toFixed(
+          <li>{`${char.text} (x: ${char.x.toFixed(2)} y: ${char.y.toFixed(
             2
           )})`}</li>
         ))}
