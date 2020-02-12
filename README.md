@@ -1,4 +1,7 @@
-# pdf-table-extractor
+# pdf-text.js
+
+A JavaScript front-end solution to Extract text from pdf documents into useable organized data objects. The user provides a pdf file (data buffer or url) and an optional template config. Without the template config the function will return an array of character objects with character, x & y coordinates(lower lefthand corner) and width measurement of character. With a template file the user can validate the parsing and pull out blocks of text and table data. 
+
 
 Current state:
 
