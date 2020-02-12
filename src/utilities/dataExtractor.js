@@ -1,3 +1,17 @@
+/**
+ * An object containing the information to sort objects with (x,y) coordinate properties.
+ * @typedef {Object} TemplateObj
+ * @property {Object[]} tables table coordinate information
+ */
+
+/**
+ * @param {Object[]} items of objects containing {x: number,y:number}
+ * @param {string} items[].text The value that is extracted
+ * @param {number} items[].x Location of item on the x-axis (horizontal axis)
+ * @param {number} items[].y Location of item on the y-axis (vertical axis)
+ *
+ * @param {TemplateObj} template object containing coordinates of data to be extracted
+ */
 export default function dataExtractor(items, template) {
   console.log(items);
   const data = {};
