@@ -28,7 +28,7 @@ ToDo:
 
 Currently Pulls location of every character on screen with location.
 
-[Demo](https://pdf-table-dev.netlify.com/)
+[Demo](https://pdftext.netlify.com/)
 
 ## Available Scripts
 
