@@ -93,6 +93,17 @@ function App() {
   return (
     <div className="App">
       <FileInput onChange={handleFileInputChange}></FileInput>
+
+      <span>
+        {'Download: '}
+        <a
+          href={process.env.PUBLIC_URL + '/sampleTables.pdf'}
+          download="sampleTable.pdf"
+        >
+          sampleTable.pdf
+        </a>
+      </span>
+
       {data.tables &&
         data.tables.map((table, idx) => (
           <div key={idx}>
