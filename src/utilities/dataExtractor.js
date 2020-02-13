@@ -1,3 +1,4 @@
+import merge from 'deepmerge';
 /**
  * An object containing the information to sort objects with (x,y) coordinate properties.
  * @typedef {Object} TemplateObj
@@ -13,7 +14,6 @@
  * @param {TemplateObj} template object containing coordinates of data to be extracted
  */
 export default function dataExtractor(items, template) {
-  console.log(items);
   const data = {};
 
   const isBetween = (start, stop) => value => {
@@ -22,7 +22,6 @@ export default function dataExtractor(items, template) {
   };
 
   for (let key in template) {
-    console.log(key);
     switch (key) {
       case 'tables':
         const getInbounds = (items, { top, bottom, left, right }) => {
@@ -53,12 +52,72 @@ export default function dataExtractor(items, template) {
             return merge(rowObj, { [accessor]: [text] });
           }, {});
 
-        data.tables = template.tables.map(tableTemplate => ({
-          rows: getRows(getInbounds(items, tableTemplate)).map(
+        const mergeMultiLineCell = (mergeRule, rows) => {
+          const mutatingRows = [...rows];
+          const { requiredKey, direction } = mergeRule;
+          let mergedRows = [];
+          for (let i = 0; i < mutatingRows.length; i++) {
+            const current = { ...mutatingRows[i] };
+            if (current[requiredKey]) {
+              mergedRows.push(current);
+            } else {
+              const rowAbove = mutatingRows[i - 1];
+              const rowBelow = mutatingRows[i + 1];
+              // let combinedRows;
+              switch (direction) {
+                case 'up':
+                  if (i === 0) throw new Error('Can not merge up on first row');
+                  mergedRows[i - 1] = merge(current, rowAbove);
+                  break;
+                case 'down':
+                  if (i + 1 === rows.length)
+                    throw new Error('Can not merge down on last row');
+                  mutatingRows[i + 1] = merge(current, rowBelow);
+                  break;
+                case 'closest':
+                  const upDistance = rowAbove
+                    ? current.y - rowAbove.y
+                    : Infinity;
+                  const downDistance = rowBelow
+                    ? rowBelow.y - current.y
+                    : Infinity;
+                  const { y, ...currentNoY } = current;
+                  if (upDistance < downDistance) {
+                    if (i === 0)
+                      throw new Error('Can not merge up on first row');
+                    mergedRows[mergedRows.length - 1] = merge(
+                      rowAbove,
+                      currentNoY
+                    );
+                  } else {
+                    if (i + 1 >= rows.length)
+                      throw new Error('Can not merge down on last row');
+                    mutatingRows[i + 1] = merge(rowBelow, currentNoY);
+                  }
+                  break;
+
+                default:
+                  throw new Error(
+                    `unknown template merge direction: ${direction}`
+                  );
+              }
+            }
+          }
+          return mergedRows;
+        };
+
+        data.tables = template.tables.map(tableTemplate => {
+          let rows = getRows(getInbounds(items, tableTemplate)).map(
             rowToColumns(tableTemplate.columns)
-          ),
-          name: tableTemplate.name
-        }));
+          );
+          if (tableTemplate.mergeRule) {
+            rows = mergeMultiLineCell(tableTemplate.mergeRule, rows);
+          }
+          return {
+            rows,
+            name: tableTemplate.name
+          };
+        });
         break;
 
       default:
