@@ -43,15 +43,14 @@ export default function dataExtractor(items, template) {
 
           return Object.values(rowsObj).sort((a, b) => a[0].y - b[0].y);
         };
-        const rowToColumns = columns => row =>
-          row.reduce((acc, char) => {
-            const { x, text } = char;
+        const rowToColumns = columns => rowArray =>
+          rowArray.reduce((rowObj, char) => {
+            const { x, y, text } = char;
             const { accessor } = columns.find(columnX => x < columnX.x);
 
-            acc[accessor] =
-              acc[accessor] === undefined ? [text] : [...acc[accessor], text];
+            if (rowObj.y === undefined) rowObj.y = y;
 
-            return acc;
+            return merge(rowObj, { [accessor]: [text] });
           }, {});
 
         data.tables = template.tables.map(tableTemplate => ({
