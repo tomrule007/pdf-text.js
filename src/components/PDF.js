@@ -26,7 +26,7 @@ const PdfComponent = ({ file }) => {
       const page = await pdf.getPage(firstPageNumber);
 
       const scale = 1.5;
-      const viewport = page.getViewport({ scale: scale });
+      const viewport = page.getViewport({ scale });
 
       // Prepare canvas using PDF page dimensions
       const canvas = canvasRef.current;
@@ -40,7 +40,7 @@ const PdfComponent = ({ file }) => {
       // Render PDF page into canvas context
       const renderContext = {
         canvasContext: context,
-        viewport: viewport
+        viewport
       };
       const renderTask = page.render(renderContext);
 

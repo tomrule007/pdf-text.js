@@ -33,7 +33,7 @@ const rowToColumns = columns => rowArray =>
 const mergeMultiLineCell = (mergeRule, rows) => {
   const mutatingRows = [...rows];
   const { requiredKey, direction } = mergeRule;
-  let mergedRows = [];
+  const mergedRows = [];
   for (let i = 0; i < mutatingRows.length; i++) {
     const current = { ...mutatingRows[i] };
     if (current[requiredKey]) {
@@ -91,7 +91,7 @@ const mergeMultiLineCell = (mergeRule, rows) => {
 export default function dataExtractor(items, template) {
   const data = {};
 
-  for (let key in template) {
+  for (const key in template) {
     switch (key) {
       case 'tables':
         data.tables = template.tables.map(tableTemplate => {

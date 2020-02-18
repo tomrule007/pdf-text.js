@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import pdfText from '../utilities/pdfText';
+
 export default function PdfTextViewer({ file }) {
   const [fileText, setFileText] = useState([['loading...']]);
   useEffect(() => {

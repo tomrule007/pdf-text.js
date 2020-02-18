@@ -36,7 +36,7 @@ const PdfComponent = ({ file }) => {
       const page = await pdf.getPage(firstPageNumber);
 
       const scale = 1.5;
-      const viewport = page.getViewport({ scale: scale });
+      const viewport = page.getViewport({ scale });
 
       // Prepare canvas using PDF page dimensions
       const canvas = canvasRef.current;
@@ -50,7 +50,7 @@ const PdfComponent = ({ file }) => {
       // Render PDF page into canvas context
       const renderContext = {
         canvasContext: context,
-        viewport: viewport
+        viewport
       };
       const renderTask = page.render(renderContext);
 
@@ -68,7 +68,7 @@ const PdfComponent = ({ file }) => {
         fabricCanvas.renderAll.bind(fabricCanvas)
       );
 
-      var rect = new fabric.Rect({
+      const rect = new fabric.Rect({
         name: 'table',
         left: 100,
         top: 100,
@@ -96,14 +96,14 @@ const PdfComponent = ({ file }) => {
       });
       fabricCanvas.add(rect);
 
-      let columns = template.columns;
-      let top = template.top;
-      let left = template.left;
-      let bottom = template.bottom;
-      let right = template.right;
+      let {columns} = template;
+      let {top} = template;
+      let {left} = template;
+      let {bottom} = template;
+      let {right} = template;
 
       fabricCanvas.on('object:modified', e => {
-        var o = e.target;
+        const o = e.target;
         //   console.log(o.aCoords);
         if (o.name === 'table') {
           top = o.aCoords.tl.y;
@@ -117,15 +117,15 @@ const PdfComponent = ({ file }) => {
       fabricCanvas.on('mouse:down', e => {
         if (e.e.shiftKey && e.target && e.target.name === 'table') {
           console.log('add line!');
-          var { x } = e.pointer;
+          const { x } = e.pointer;
           const top = e.target.aCoords.tl.y;
           const bottom = e.target.aCoords.bl.y;
-          var line = new fabric.Line([x, top, x, bottom], {
+          const line = new fabric.Line([x, top, x, bottom], {
             fill: 'red',
             stroke: 'red',
             strokeWidth: 2,
             selectable: true
-            //evented: false
+            // evented: false
           });
           fabricCanvas.add(line);
           columns = [...columns, x].sort();
