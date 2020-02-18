@@ -1,8 +1,6 @@
 import React, { useState, useEffect } from 'react';
 
 import FileInput from './components/FileInput';
-import PdfTextViewer from './components/PdfTextViewer';
-import PdfComponent from './components/PDF';
 import pdfText from './utilities/pdfText';
 import dataExtractor from './utilities/dataExtractor';
 
@@ -11,7 +9,6 @@ import TemplateCreator from './components/TemplateCreator';
 function App() {
   const [invoiceFolder, setInvoiceFolder] = useState([]);
   const [pdfItems, setPdfItems] = useState(null);
-  const [pdfData, setPdfData] = useState(null);
   useEffect(() => {
     async function fetchFileData() {
       const file = invoiceFolder[0];
@@ -27,11 +24,6 @@ function App() {
     return () => {};
   }, [invoiceFolder]);
 
-  console.log('PDF text', pdfItems);
-
-  const helloWorldTemplate = {
-    tables: [{ top: 200, left: 100, bottom: 235, right: 150 }]
-  };
   const sampleTableTemplate = {
     tables: [
       {
@@ -84,7 +76,6 @@ function App() {
   const data = pdfItems
     ? dataExtractor(pdfItems.pages[0], sampleTableTemplate)
     : [];
-  console.log('data', data);
 
   const handleFileInputChange = e => {
     setInvoiceFolder([...e.target.files]);
@@ -92,12 +83,12 @@ function App() {
 
   return (
     <div className="App">
-      <FileInput onChange={handleFileInputChange}></FileInput>
+      <FileInput onChange={handleFileInputChange} />
 
       <span>
         {'Download: '}
         <a
-          href={process.env.PUBLIC_URL + '/sampleTables.pdf'}
+          href={`${process.env.PUBLIC_URL}/sampleTables.pdf`}
           download="sampleTable.pdf"
         >
           sampleTable.pdf
@@ -105,10 +96,8 @@ function App() {
       </span>
 
       {data.tables &&
-        data.tables.map((table, idx) => (
-          <div key={idx}>
-            {console.log(table)}
-
+        data.tables.map(table => (
+          <div key={table.name}>
             <h3>{table.name}</h3>
             <table
               style={{
