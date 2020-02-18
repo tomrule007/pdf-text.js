@@ -1,3 +1,11 @@
+/* eslint-disable no-underscore-dangle */
+/* 
+Leaving '_transformMatrix' because I believe it has more browser 
+support than the newer method 'ctx.getTransform()'
+
+If that is wrong we can switch it and remove the lint disabler
+*/
+
 /**
  * fillTextIntercept modified a canvas context object to intercept all calls to 'fillText' and recorder results into an array
  * Inspired by: https://www.garysieling.com/blog/extracting-tables-from-pdfs-in-javascript-with-pdf-js
@@ -5,18 +13,19 @@
  * @param {Boolean} debug Set to true to draw boxes around each 'fillText' call
  */
 export default function fillTextIntercept(ctx, debug = false) {
-  const chars = [];
+  // Add chars array to context object
+  ctx.chars = [];
   // Save reference to the real fillText function
-  var fillText = ctx.fillText;
+  const { fillText } = ctx;
 
-  ctx.fillText = function(text, x, y) {
-    const width = ctx.measureText(text).width;
+  ctx.fillText = function intercept(text, x, y) {
+    const { width } = ctx.measureText(text);
 
     // Store Character info in chars array
-    chars[chars.length] = {
+    this.chars[this.chars.length] = {
       text,
-      x: ctx._transformMatrix[4] + x,
-      y: ctx._transformMatrix[5] + y,
+      x: this._transformMatrix[4] + x,
+      y: this._transformMatrix[5] + y,
       width
     };
 
@@ -29,5 +38,5 @@ export default function fillTextIntercept(ctx, debug = false) {
     fillText.apply(ctx, [text, x, y]);
   };
 
-  return chars;
+  return ctx.chars;
 }
