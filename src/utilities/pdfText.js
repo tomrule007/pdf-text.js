@@ -36,12 +36,13 @@ const pdfText = async src => {
 
   const pdf = await loadingTask.promise;
 
-  const pageRenderPromises = [];
-  for (let i = 1; i <= pdf.numPages; i += 1) {
-    pageRenderPromises.push(pdf.getPage(i).then(addCanvasAndRender));
-  }
+  const pagesToRender = new Array(pdf.numPages).fill(null);
 
-  const renderedPages = await Promise.all(pageRenderPromises);
+  const renderingPages = pagesToRender.map((_, i) =>
+    pdf.getPage(i + 1).then(addCanvasAndRender)
+  );
+
+  const renderedPages = await Promise.all(renderingPages);
   const pageCharacters = renderedPages.map(page => page.chars);
 
   return { pages: pageCharacters, numPages: pdf.numPages };
