@@ -124,9 +124,7 @@ function App() {
         ))}
       <ol>
         {invoiceFolder.map(file => (
-          <div>
-            <TemplateCreator file={file} />
-          </div>
+          <div>{/* <TemplateCreator file={file} /> */}</div>
         ))}
       </ol>
     </div>

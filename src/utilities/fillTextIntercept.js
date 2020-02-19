@@ -47,6 +47,4 @@ export default function fillTextIntercept(ctx, storageObject, debug = false) {
     // Call real filltext function
     fillText.apply(ctx, [text, x, y]);
   };
-
-  return ctx.chars;
 }
