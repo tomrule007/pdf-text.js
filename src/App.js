@@ -2,14 +2,11 @@ import React, { useState } from 'react';
 
 import FileInput from './components/FileInput';
 import pdfText from './utilities/pdfText';
-import dataExtractor from './utilities/dataExtractor';
+import PdfTable from './components/PdfTable';
 
 function App() {
   const [template, setTemplate] = useState(null);
   const [pdfItems, setPdfItems] = useState(null);
-
-  const data =
-    pdfItems && template ? dataExtractor(pdfItems.pages[0], template) : [];
 
   const handleFileInputChange = e => {
     const file = e.target.files[0];
@@ -65,35 +62,7 @@ function App() {
           sampleTable.json
         </a>
       </span>
-
-      {data &&
-        data.tables &&
-        data.tables.map(table => (
-          <div key={table.name}>
-            <h3>{table.name}</h3>
-            <table
-              style={{
-                border: '1px solid black',
-                'border-collapse': 'collapse'
-              }}
-            >
-              <tbody>
-                {table.rows.map(row => (
-                  <tr style={{ border: '1px solid black' }}>
-                    {Object.entries(row).map(
-                      ([k, v]) =>
-                        k !== 'y' && (
-                          <td style={{ border: '1px solid black' }}>
-                            {v.join('')}
-                          </td>
-                        )
-                    )}
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
-        ))}
+      <PdfTable items={pdfItems} template={template} />
     </div>
   );
 }
