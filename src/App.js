@@ -4,8 +4,6 @@ import FileInput from './components/FileInput';
 import pdfText from './utilities/pdfText';
 import dataExtractor from './utilities/dataExtractor';
 
-import TemplateCreator from './components/TemplateCreator';
-
 function App() {
   const [invoiceFolder, setInvoiceFolder] = useState([]);
   const [pdfItems, setPdfItems] = useState(null);
@@ -83,7 +81,7 @@ function App() {
 
   return (
     <div className="App">
-      <FileInput onChange={handleFileInputChange} />
+      <FileInput onChange={handleFileInputChange} htmlFor="pdfInput" />
 
       <span>
         {'Download: '}
@@ -122,11 +120,6 @@ function App() {
             </table>
           </div>
         ))}
-      <ol>
-        {invoiceFolder.map(file => (
-          <div>{/* <TemplateCreator file={file} /> */}</div>
-        ))}
-      </ol>
     </div>
   );
 }
