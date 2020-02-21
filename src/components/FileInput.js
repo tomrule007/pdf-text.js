@@ -1,18 +1,20 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
-export default function FileInput({ onChange, htmlFor }) {
+export default function FileInput({ labelText, onChange, htmlFor, accept }) {
   return (
     <div>
       <label htmlFor={htmlFor}>
-        Select a pdf file:
-        <input type="file" id={htmlFor} onChange={onChange} accept=".pdf" />
+        {labelText}
+        <input type="file" id={htmlFor} onChange={onChange} accept={accept} />
       </label>
     </div>
   );
 }
 
 FileInput.propTypes = {
+  labelText: PropTypes.string.isRequired,
   onChange: PropTypes.func.isRequired,
-  htmlFor: PropTypes.string.isRequired
+  htmlFor: PropTypes.string.isRequired,
+  accept: PropTypes.string.isRequired
 };

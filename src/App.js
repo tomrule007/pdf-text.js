@@ -81,7 +81,12 @@ function App() {
 
   return (
     <div className="App">
-      <FileInput onChange={handleFileInputChange} htmlFor="pdfInput" />
+      <FileInput
+        labelText="Select a pdf file:"
+        accept=".pdf"
+        onChange={handleFileInputChange}
+        htmlFor="pdfInput"
+      />
 
       <span>
         {'Download: '}
