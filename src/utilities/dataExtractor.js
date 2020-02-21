@@ -25,22 +25,27 @@ const rowToColumns = columns => rowArray =>
   rowArray.reduce((rowObj, char) => {
     const { x, y, text } = char;
     const { accessor } = columns.find(columnX => x < columnX.x);
+    const newProperties = {
+      [accessor]: [text],
+      ...(rowObj.y === undefined && { y })
+    };
 
-    if (rowObj.y === undefined) rowObj.y = y;
-
-    return merge(rowObj, { [accessor]: [text] });
+    return merge(rowObj, newProperties);
   }, {});
 const mergeMultiLineCell = (mergeRule, rows) => {
   const mutatingRows = [...rows];
   const { requiredKey, direction } = mergeRule;
   const mergedRows = [];
-  for (let i = 0; i < mutatingRows.length; i++) {
+  for (let i = 0; i < mutatingRows.length; i += 1) {
     const current = { ...mutatingRows[i] };
     if (current[requiredKey]) {
       mergedRows.push(current);
     } else {
       const rowAbove = mutatingRows[i - 1];
       const rowBelow = mutatingRows[i + 1];
+      const upDistance = rowAbove ? current.y - rowAbove.y : Infinity;
+      const downDistance = rowBelow ? rowBelow.y - current.y : Infinity;
+      const { y, ...currentNoY } = current;
       // let combinedRows;
       switch (direction) {
         case 'up':
@@ -53,9 +58,6 @@ const mergeMultiLineCell = (mergeRule, rows) => {
           mutatingRows[i + 1] = merge(current, rowBelow);
           break;
         case 'closest':
-          const upDistance = rowAbove ? current.y - rowAbove.y : Infinity;
-          const downDistance = rowBelow ? rowBelow.y - current.y : Infinity;
-          const { y, ...currentNoY } = current;
           if (upDistance < downDistance) {
             if (i === 0) throw new Error('Can not merge up on first row');
             mergedRows[mergedRows.length - 1] = merge(rowAbove, currentNoY);
@@ -91,7 +93,7 @@ const mergeMultiLineCell = (mergeRule, rows) => {
 export default function dataExtractor(items, template) {
   const data = {};
 
-  for (const key in template) {
+  Object.keys(template).forEach(key => {
     switch (key) {
       case 'tables':
         data.tables = template.tables.map(tableTemplate => {
@@ -111,7 +113,7 @@ export default function dataExtractor(items, template) {
       default:
         throw new Error(`unknown template data type: ${key}`);
     }
-  }
+  });
 
   return data;
 }

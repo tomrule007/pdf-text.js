@@ -9,7 +9,7 @@ import fillTextIntercept from '../utilities/fillTextIntercept';
 
 pdfjs.GlobalWorkerOptions.workerSrc = pdfjsWorker;
 
-const PdfComponent = ({ file }) => {
+export default function TemplateCreator({ file }) {
   const canvasRef = useRef(null);
   const fabricCanvasRef = useRef(null);
   const [charInfo, setCharInfo] = useState([]);
@@ -96,11 +96,11 @@ const PdfComponent = ({ file }) => {
       });
       fabricCanvas.add(rect);
 
-      let {columns} = template;
-      let {top} = template;
-      let {left} = template;
-      let {bottom} = template;
-      let {right} = template;
+      let { columns } = template;
+      let { top } = template;
+      let { left } = template;
+      let { bottom } = template;
+      let { right } = template;
 
       fabricCanvas.on('object:modified', e => {
         const o = e.target;
@@ -116,10 +116,9 @@ const PdfComponent = ({ file }) => {
       });
       fabricCanvas.on('mouse:down', e => {
         if (e.e.shiftKey && e.target && e.target.name === 'table') {
-          console.log('add line!');
           const { x } = e.pointer;
-          const top = e.target.aCoords.tl.y;
-          const bottom = e.target.aCoords.bl.y;
+          const topTarget = e.target.aCoords.tl.y;
+          const bottomTarget = e.target.aCoords.bl.y;
           const line = new fabric.Line([x, top, x, bottom], {
             fill: 'red',
             stroke: 'red',
@@ -129,13 +128,19 @@ const PdfComponent = ({ file }) => {
           });
           fabricCanvas.add(line);
           columns = [...columns, x].sort();
-          setTemplate({ top, left, bottom, right, columns });
+          setTemplate({
+            top: topTarget,
+            left,
+            bottom: bottomTarget,
+            right,
+            columns
+          });
         }
       });
       // console.log(charArray);
     };
 
-    if (file !== undefined) fetchPdf();
+    if (file !== null) fetchPdf();
   }, [file]);
 
   const tableChars = charInfo.filter(char => {
@@ -158,7 +163,6 @@ const PdfComponent = ({ file }) => {
 
     return acc;
   }, []);
-  console.log({ columnChars });
 
   return (
     <>
@@ -185,10 +189,14 @@ const PdfComponent = ({ file }) => {
       </ul>
     </>
   );
+}
+
+TemplateCreator.propTypes = {
+  file: PropTypes.shape({
+    arrayBuffer: PropTypes.func.isRequired
+  })
 };
 
-PdfComponent.propTypes = {
-  file: PropTypes.object
+TemplateCreator.defaultProps = {
+  file: null
 };
-
-export default PdfComponent;

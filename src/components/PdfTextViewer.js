@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import PropTypes from 'prop-types';
 import pdfText from '../utilities/pdfText';
 
 export default function PdfTextViewer({ file }) {
@@ -10,7 +11,7 @@ export default function PdfTextViewer({ file }) {
       setFileText(textArray);
     };
 
-    if (file !== undefined) {
+    if (file !== null) {
       fetchPdfText();
     }
   }, [file]);
@@ -31,3 +32,14 @@ export default function PdfTextViewer({ file }) {
     </div>
   );
 }
+
+PdfTextViewer.propTypes = {
+  file: PropTypes.shape({
+    name: PropTypes.string.isRequired,
+    arrayBuffer: PropTypes.func.isRequired
+  })
+};
+
+PdfTextViewer.defaultProps = {
+  file: null
+};
