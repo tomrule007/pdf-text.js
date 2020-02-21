@@ -4,11 +4,9 @@ import PropTypes from 'prop-types';
 import pdfjs from 'pdfjs-dist';
 import pdfjsWorker from 'pdfjs-dist/build/pdf.worker.entry';
 
-import fillTextIntercept from '../utilities/fillTextIntercept';
-
 pdfjs.GlobalWorkerOptions.workerSrc = pdfjsWorker;
 
-const PdfComponent = ({ file }) => {
+export default function PdfComponent({ file }) {
   const canvasRef = useRef(null);
 
   useEffect(() => {
@@ -35,8 +33,6 @@ const PdfComponent = ({ file }) => {
       canvas.height = viewport.height;
       canvas.width = viewport.width;
 
-      const charArray = fillTextIntercept(context, true);
-
       // Render PDF page into canvas context
       const renderContext = {
         canvasContext: context,
@@ -45,11 +41,9 @@ const PdfComponent = ({ file }) => {
       const renderTask = page.render(renderContext);
 
       await renderTask.promise;
-
-      console.log(charArray);
     };
 
-    if (file !== undefined) fetchPdf();
+    if (file !== null) fetchPdf();
   }, [file]);
 
   return (
@@ -59,10 +53,14 @@ const PdfComponent = ({ file }) => {
       height={window.innerHeight}
     />
   );
-};
+}
 
 PdfComponent.propTypes = {
-  file: PropTypes.object
+  file: PropTypes.shape({
+    arrayBuffer: PropTypes.func.isRequired
+  })
 };
 
-export default PdfComponent;
+PdfComponent.defaultProps = {
+  file: null
+};
