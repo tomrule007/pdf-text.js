@@ -1,0 +1,49 @@
+{
+  "tables": [
+    {
+      "name": "table1",
+      "top": 60,
+      "left": 60,
+      "bottom": 300,
+      "right": 832,
+      "mergeRule": { "requiredKey": "id", "direction": "closest" },
+      "columns": [
+        { "x": 95, "name": "ID", "accessor": "id" },
+        { "x": 260, "name": "Name", "accessor": "name" },
+        { "x": 515, "name": "Email", "accessor": "email" },
+        { "x": 691, "name": "Country", "accessor": "country" },
+        { "x": 1000, "name": "IP-address", "accessor": "ip" }
+      ]
+    },
+    {
+      "name": "From javascript arrays",
+      "top": 387,
+      "left": 60,
+      "bottom": 618,
+      "right": 832,
+      "mergeRule": { "requiredKey": "id", "direction": "closest" },
+      "columns": [
+        { "x": 100, "name": "ID", "accessor": "id" },
+        { "x": 180, "name": "Name", "accessor": "name" },
+        { "x": 470, "name": "Email", "accessor": "email" },
+        { "x": 670, "name": "Country", "accessor": "country" },
+        { "x": 1000, "name": "IP-address", "accessor": "ip" }
+      ]
+    },
+    {
+      "name": "From HTML with CSS",
+      "top": 697,
+      "left": 60,
+      "bottom": 948,
+      "right": 832,
+      "mergeRule": { "requiredKey": "id", "direction": "closest" },
+      "columns": [
+        { "x": 105, "name": "ID", "accessor": "id" },
+        { "x": 285, "name": "Name", "accessor": "name" },
+        { "x": 517, "name": "Email", "accessor": "email" },
+        { "x": 700, "name": "Country", "accessor": "country" },
+        { "x": 1000, "name": "IP-address", "accessor": "ip" }
+      ]
+    }
+  ]
+}

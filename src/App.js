@@ -6,6 +6,7 @@ import dataExtractor from './utilities/dataExtractor';
 
 function App() {
   const [invoiceFolder, setInvoiceFolder] = useState([]);
+  const [template, setTemplate] = useState(null);
   const [pdfItems, setPdfItems] = useState(null);
   useEffect(() => {
     async function fetchFileData() {
@@ -79,6 +80,17 @@ function App() {
     setInvoiceFolder([...e.target.files]);
   };
 
+  const handleTemplateFileChange = e => {
+    const uploadedFile = e.target.files[0];
+    if (uploadedFile) {
+      uploadedFile.text().then(text => {
+        setTemplate(JSON.parse(text));
+      });
+    } else {
+      setTemplate(null);
+    }
+  };
+  console.log('template', template, 'sampleTemplate', sampleTableTemplate);
   return (
     <div className="App">
       <FileInput
@@ -87,7 +99,12 @@ function App() {
         onChange={handleFileInputChange}
         htmlFor="pdfInput"
       />
-
+      <FileInput
+        labelText="Select a template file:"
+        accept=".json"
+        onChange={handleTemplateFileChange}
+        htmlFor="templateInput"
+      />
       <span>
         {'Download: '}
         <a
@@ -96,9 +113,17 @@ function App() {
         >
           sampleTable.pdf
         </a>
+        {' / '}
+        <a
+          href={`${process.env.PUBLIC_URL}/sampleTables.json`}
+          download="sampleTable.json"
+        >
+          sampleTable.json
+        </a>
       </span>
 
-      {data.tables &&
+      {data &&
+        data.tables &&
         data.tables.map(table => (
           <div key={table.name}>
             <h3>{table.name}</h3>
