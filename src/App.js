@@ -4,9 +4,12 @@ import FileInput from './components/FileInput';
 import pdfText from './utilities/pdfText';
 import PdfTable from './components/PdfTable';
 
+import samplePdfTemplate from './sampleFiles/sampleTables.json';
+import samplePdf from './sampleFiles/sampleTables.pdf';
+
 function App() {
-  const [template, setTemplate] = useState(null);
-  const [pdfFile, setPdfFile] = useState(null);
+  const [template, setTemplate] = useState(samplePdfTemplate);
+  const [pdfFile, setPdfFile] = useState(samplePdf);
   const [pdfItems, setPdfItems] = useState(null);
 
   useEffect(() => {
