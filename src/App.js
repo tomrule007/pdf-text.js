@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 
 import FileInput from './components/FileInput';
 import pdfText from './utilities/pdfText';
@@ -6,18 +6,27 @@ import PdfTable from './components/PdfTable';
 
 function App() {
   const [template, setTemplate] = useState(null);
+  const [pdfFile, setPdfFile] = useState(null);
   const [pdfItems, setPdfItems] = useState(null);
+
+  useEffect(() => {
+    if (pdfFile === null) {
+      setPdfItems(null);
+    } else {
+      pdfText(pdfFile).then(items => {
+        setPdfItems(items);
+      });
+    }
+  }, [template, pdfFile]);
 
   const handleFileInputChange = e => {
     const file = e.target.files[0];
     if (file) {
       file.arrayBuffer().then(buffer => {
-        pdfText({ data: buffer }).then(items => {
-          setPdfItems(items);
-        });
+        setPdfFile({ data: buffer });
       });
     } else {
-      setPdfItems(null);
+      setPdfFile(null);
     }
   };
 
