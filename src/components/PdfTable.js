@@ -1,16 +1,13 @@
-import React, { useState, useEffect } from 'react';
+import React, { useMemo } from 'react';
 import PropTypes from 'prop-types';
+import ReactTable from './ReactTable';
 import dataExtractor from '../utilities/dataExtractor';
 import './PdfTable.css';
 
 export default function PdfTable({ items, template }) {
-  const [data, setData] = useState({});
-  useEffect(() => {
-    if (items && template) {
-      setData(dataExtractor(items.pages[0], template));
-    } else {
-      setData({});
-    }
+  const data = useMemo(() => {
+    if (!items || !template) return {};
+    return dataExtractor(items.pages[0], template);
   }, [items, template]);
 
   return (
@@ -19,17 +16,7 @@ export default function PdfTable({ items, template }) {
         data.tables.map(table => (
           <div key={table.name}>
             <h3>{table.name}</h3>
-            <table>
-              <tbody>
-                {table.rows.map(row => (
-                  <tr>
-                    {Object.entries(row).map(
-                      ([k, v]) => k !== 'y' && <td>{v.join('')}</td>
-                    )}
-                  </tr>
-                ))}
-              </tbody>
-            </table>
+            <ReactTable data={table.rows} columns={table.columns} />
           </div>
         ))}
     </div>
