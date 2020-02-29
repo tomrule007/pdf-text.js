@@ -104,6 +104,7 @@ export default function dataExtractor(items, template) {
             rows = mergeMultiLineCell(tableTemplate.mergeRule, rows);
           }
           return {
+            columns: tableTemplate.columns,
             rows,
             name: tableTemplate.name
           };
