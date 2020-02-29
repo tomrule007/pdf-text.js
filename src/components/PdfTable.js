@@ -1,16 +1,12 @@
-import React, { useState, useEffect } from 'react';
+import React, { useMemo } from 'react';
 import PropTypes from 'prop-types';
 import dataExtractor from '../utilities/dataExtractor';
 import './PdfTable.css';
 
 export default function PdfTable({ items, template }) {
-  const [data, setData] = useState({});
-  useEffect(() => {
-    if (items && template) {
-      setData(dataExtractor(items.pages[0], template));
-    } else {
-      setData({});
-    }
+  const data = useMemo(() => {
+    if (!items || !template) return {};
+    return dataExtractor(items.pages[0], template);
   }, [items, template]);
 
   return (
