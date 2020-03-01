@@ -11,6 +11,17 @@ support than the newer method 'ctx.getTransform()'
 If that is wrong we can switch it and remove the lint disabler
 */
 
+const getRealXY = (transformMatrix, [x, y]) => {
+  const [a, b, c, d, e, f] = transformMatrix;
+  // Apply the transformation to input coordinates using matrix dot product formula
+  //
+  // | a c e |   | x |    |x * a + y * c + 1 * e |
+  // | b d f | * | y |  = |x * b + y * d + 1 * f |
+  // | 0 0 1 |   | 1 |    |x * 0 + y * 0 + 1 * 1 |
+
+  return [x * a + y * c + 1 * e, x * b + y * d + 1 * f];
+};
+
 /**
  * fillTextIntercept modified a canvas context object to intercept all calls to 'fillText' and recorder results into an array
  * Inspired by: https://www.garysieling.com/blog/extracting-tables-from-pdfs-in-javascript-with-pdf-js
@@ -18,6 +29,7 @@ If that is wrong we can switch it and remove the lint disabler
  * @param {Boolean} debug Set to true to draw boxes around each 'fillText' call
  */
 export default function fillTextIntercept(ctx, storageObject, debug = false) {
+  const CHAR_CODE_OFFSET = 0;
   // Add chars array to storageObject
   if (storageObject.chars)
     throw new Error(
@@ -29,13 +41,15 @@ export default function fillTextIntercept(ctx, storageObject, debug = false) {
   const { fillText } = ctx;
 
   ctx.fillText = function intercept(text, x, y) {
-    const { width } = ctx.measureText(text);
+    const realChar = String.fromCharCode(text.charCodeAt(0) - CHAR_CODE_OFFSET);
+    const [realX, realY] = getRealXY(this._transformMatrix, [x, y]);
+    const width = ctx.measureText(realChar).width * this._transformMatrix[0];
 
     // Store Character info in chars array
     storageObject.chars[storageObject.chars.length] = {
-      text,
-      x: this._transformMatrix[4] + x,
-      y: this._transformMatrix[5] + y,
+      text: realChar,
+      x: realX,
+      y: realY,
       width
     };
 
