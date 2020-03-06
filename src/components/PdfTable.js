@@ -1,7 +1,7 @@
 import React, { useMemo } from 'react';
 import PropTypes from 'prop-types';
 import ReactTable from './ReactTable';
-import dataExtractor from '../utilities/dataExtractor';
+import dataExtractor from '../pdfTextExtractor/dataExtractor';
 import './PdfTable.css';
 
 export default function PdfTable({ items, template }) {

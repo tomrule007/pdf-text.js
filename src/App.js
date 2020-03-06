@@ -1,11 +1,12 @@
 import React, { useState, useEffect } from 'react';
 
 import FileInput from './components/FileInput';
-import pdfText from './utilities/pdfText';
+import pdfText from './pdfTextExtractor/pdfText';
 import PdfTable from './components/PdfTable';
 
 import samplePdfTemplate from './sampleFiles/sampleTables.json';
 import samplePdf from './sampleFiles/sampleTables.pdf';
+import TemplateCreator from './components/TemplateCreator';
 
 function App() {
   const [template, setTemplate] = useState(samplePdfTemplate);
@@ -74,6 +75,7 @@ function App() {
           sampleTable.json
         </a>
       </span>
+      <TemplateCreator file={pdfFile} chars={pdfItems} />
       <PdfTable items={pdfItems} template={template} />
     </div>
   );

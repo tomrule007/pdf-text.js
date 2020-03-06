@@ -5,11 +5,9 @@ import { fabric } from 'fabric';
 import pdfjs from 'pdfjs-dist';
 import pdfjsWorker from 'pdfjs-dist/build/pdf.worker.entry';
 
-import fillTextIntercept from '../utilities/fillTextIntercept';
-
 pdfjs.GlobalWorkerOptions.workerSrc = pdfjsWorker;
 
-export default function TemplateCreator({ file }) {
+export default function TemplateCreator({ file, chars }) {
   const canvasRef = useRef(null);
   const fabricCanvasRef = useRef(null);
   const [charInfo, setCharInfo] = useState([]);
@@ -20,14 +18,14 @@ export default function TemplateCreator({ file }) {
     right: null,
     columns: []
   });
-
+  useEffect(() => {
+    if (chars && chars.pages) {
+      setCharInfo(chars.pages[0]);
+    }
+  }, [chars]);
   useEffect(() => {
     const fetchPdf = async () => {
-      const pdfData = await file.arrayBuffer();
-      const loadingTask = pdfjs.getDocument({
-        data: pdfData
-        //  disableFontFace: true
-      });
+      const loadingTask = pdfjs.getDocument(file);
 
       const pdf = await loadingTask.promise;
 
@@ -45,8 +43,6 @@ export default function TemplateCreator({ file }) {
       canvas.height = viewport.height;
       canvas.width = viewport.width;
 
-      const charArray = fillTextIntercept(context);
-
       // Render PDF page into canvas context
       const renderContext = {
         canvasContext: context,
@@ -56,7 +52,6 @@ export default function TemplateCreator({ file }) {
 
       await renderTask.promise;
 
-      setCharInfo(charArray);
       // convert canvas to background image to import into fabric canvas
       const bg = canvas.toDataURL('image/png');
       const fabricCanvas = new fabric.Canvas(fabricCanvasRef.current, {
@@ -172,7 +167,12 @@ export default function TemplateCreator({ file }) {
         height={window.innerHeight}
         style={{ display: 'none' }}
       />
-      <canvas ref={fabricCanvasRef} width={500} height={500} />
+      <canvas
+        ref={fabricCanvasRef}
+        width={500}
+        height={500}
+        style={{ border: '1px solid black' }}
+      />
       <p>
         Total Chars: {charInfo.length} Table Chars: {tableChars.length}
       </p>
@@ -193,10 +193,14 @@ export default function TemplateCreator({ file }) {
 
 TemplateCreator.propTypes = {
   file: PropTypes.shape({
-    arrayBuffer: PropTypes.func.isRequired
+    data: PropTypes.array.isRequired
+  }),
+  chars: PropTypes.shape({
+    pages: PropTypes.array.isRequired
   })
 };
 
 TemplateCreator.defaultProps = {
-  file: null
+  file: null,
+  chars: null
 };
