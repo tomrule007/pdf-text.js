@@ -75,8 +75,8 @@ function App() {
           sampleTable.json
         </a>
       </span>
-      <TemplateCreator file={pdfFile} chars={pdfItems} />
       <PdfTable items={pdfItems} template={template} />
+      <TemplateCreator file={pdfFile} chars={pdfItems} />
     </div>
   );
 }
