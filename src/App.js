@@ -3,13 +3,19 @@ import React, { useState, useEffect } from 'react';
 import FileInput from './components/FileInput';
 import pdfText from './pdfTextExtractor/pdfText';
 import PdfTable from './components/PdfTable';
+import pdfTextExtractor from './pdfTextExtractor/pdfTextExtractor';
 
 import samplePdfTemplate from './sampleFiles/sampleTables.json';
+import samplePdfTemplateRefactor from './sampleFiles/sampleTablesRefactor.json';
+
 import samplePdf from './sampleFiles/sampleTables.pdf';
 import TemplateCreator from './components/TemplateCreator';
 
 function App() {
   const [template, setTemplate] = useState(samplePdfTemplate);
+  const [templateFile, setTemplateFile] = useState(
+    JSON.stringify(samplePdfTemplateRefactor)
+  );
   const [pdfFile, setPdfFile] = useState(samplePdf);
   const [pdfItems, setPdfItems] = useState(null);
 
@@ -23,11 +29,12 @@ function App() {
     }
   }, [template, pdfFile]);
 
+  console.log('pdfTextExtractor', pdfTextExtractor(pdfFile, templateFile));
   const handleFileInputChange = e => {
     const file = e.target.files[0];
     if (file) {
       file.arrayBuffer().then(buffer => {
-        setPdfFile({ data: buffer });
+        setPdfFile(buffer);
       });
     } else {
       setPdfFile(null);
@@ -39,6 +46,7 @@ function App() {
     if (uploadedFile) {
       uploadedFile.text().then(text => {
         setTemplate(JSON.parse(text));
+        setTemplateFile(text);
       });
     } else {
       setTemplate(null);

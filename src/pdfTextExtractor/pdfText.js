@@ -20,8 +20,7 @@ const getRealXY = (transformMatrix, [x, y]) => {
  * @param {CanvasRenderingContext2D} ctx canvas context to intercept calls on.
  * @param {Object} storageObject store all found characters in the 'chars' property on this object.
  */
-function fillTextIntercept(ctx, storageObject) {
-  const CHAR_CODE_OFFSET = 0;
+function fillTextIntercept(ctx, storageObject, charCodeOffset) {
   // Add chars array to storageObject
   if (storageObject.chars)
     throw new Error(
@@ -34,7 +33,9 @@ function fillTextIntercept(ctx, storageObject) {
   const { fillText } = ctx;
 
   ctx.fillText = function intercept(text, x, y) {
-    const realChar = String.fromCharCode(text.charCodeAt(0) - CHAR_CODE_OFFSET);
+    const realChar = charCodeOffset
+      ? String.fromCharCode(text.charCodeAt(0) - charCodeOffset)
+      : text;
     const transformMatrix = ctx.getTransform();
     const [realX, realY] = getRealXY(transformMatrix, [x, y]);
     const width = ctx.measureText(realChar).width * transformMatrix.a;
@@ -57,7 +58,7 @@ function fillTextIntercept(ctx, storageObject) {
   };
 }
 
-const addCanvasAndRender = page => {
+const addCanvasAndRender = charCodeOffset => page => {
   const scale = 1.5;
   const viewport = page.getViewport({ scale });
 
@@ -68,7 +69,7 @@ const addCanvasAndRender = page => {
   canvas.width = viewport.width;
 
   // Replace context fillText method  with function to store text info on page obj.
-  fillTextIntercept(context, page);
+  fillTextIntercept(context, page, charCodeOffset);
 
   // Render PDF page into canvas context
   const renderContext = {
@@ -83,7 +84,7 @@ const addCanvasAndRender = page => {
   });
 };
 
-const pdfText = async src => {
+const pdfText = async (src, charCodeOffset) => {
   const loadingTask = pdfjs.getDocument(src);
 
   const pdf = await loadingTask.promise;
@@ -91,7 +92,7 @@ const pdfText = async src => {
   const pagesToRender = new Array(pdf.numPages).fill(null);
 
   const renderingPages = pagesToRender.map((_, i) =>
-    pdf.getPage(i + 1).then(addCanvasAndRender)
+    pdf.getPage(i + 1).then(addCanvasAndRender(charCodeOffset))
   );
 
   const renderedPages = await Promise.all(renderingPages);

@@ -110,6 +110,8 @@ export default function dataExtractor(items, template) {
           };
         });
         break;
+      case 'charCodeOffset': // Used for pdfText capture phase, do nothing here.
+        break;
 
       default:
         throw new Error(`unknown template data type: ${key}`);
