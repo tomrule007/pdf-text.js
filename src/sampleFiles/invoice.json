@@ -1,0 +1,32 @@
+{
+  "charCodeOffset": 55502,
+  "tables": [
+    {
+      "name": "orderItems",
+      "pages": {
+        "all": {
+          "bounds": {
+            "top": 257,
+            "left": 19,
+            "bottom": 667,
+            "right": 1164,
+            "columns": [
+              { "x": 85, "Header": "Qty Ret", "accessor": "qtyRet" },
+              { "x": 135, "Header": "Reason", "accessor": "reason" },
+              { "x": 189, "Header": "RTI", "accessor": "rti" },
+              { "x": 255, "Header": "Ordered", "accessor": "ordered" },
+              { "x": 310, "Header": "Shipped", "accessor": "shipped" },
+              { "x": 415, "Header": "Unit", "accessor": "unit" },
+              { "x": 520, "Header": "Item #", "accessor": "itemNum" },
+              { "x": 700, "Header": "Brand", "accessor": "brand" },
+              { "x": 965, "Header": "Description", "accessor": "description" },
+              { "x": 1010, "Header": "Origin", "accessor": "origin" },
+              { "x": 1090, "Header": "Unit Price", "accessor": "unitPrice" },
+              { "x": 1164, "Header": "Amount", "accessor": "amount" }
+            ]
+          }
+        }
+      }
+    }
+  ]
+}

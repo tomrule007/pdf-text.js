@@ -6,9 +6,9 @@ import PdfTable from './components/PdfTable';
 import pdfTextExtractor from './pdfTextExtractor/pdfTextExtractor';
 
 import samplePdfTemplate from './sampleFiles/sampleTables.json';
-import samplePdfTemplateRefactor from './sampleFiles/sampleTablesRefactor.json';
+import samplePdfTemplateRefactor from './sampleFiles/invoice.json';
 
-import samplePdf from './sampleFiles/sampleTables.pdf';
+import samplePdf from './data/08745695.pdf';
 import TemplateCreator from './components/TemplateCreator';
 
 function App() {
