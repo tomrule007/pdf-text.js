@@ -1,36 +1,18 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 
 import FileInput from './components/FileInput';
-import pdfText from './pdfTextExtractor/pdfText';
 import PdfTable from './components/PdfTable';
-import pdfTextExtractor from './pdfTextExtractor/pdfTextExtractor';
 
-import samplePdfTemplate from './sampleFiles/sampleTables.json';
 import samplePdfTemplateRefactor from './sampleFiles/invoice.json';
-
 import samplePdf from './data/08745695.pdf';
+
 import TemplateCreator from './components/TemplateCreator';
 
 function App() {
-  const [template, setTemplate] = useState(samplePdfTemplate);
-  const [templateFile, setTemplateFile] = useState(
-    JSON.stringify(samplePdfTemplateRefactor)
-  );
+  const [templateFile, setTemplateFile] = useState(samplePdfTemplateRefactor);
   const [pdfFile, setPdfFile] = useState(samplePdf);
-  const [pdfItems, setPdfItems] = useState(null);
 
-  useEffect(() => {
-    if (pdfFile === null) {
-      setPdfItems(null);
-    } else {
-      pdfText(pdfFile).then(items => {
-        setPdfItems(items);
-      });
-    }
-  }, [template, pdfFile]);
-
-  console.log('pdfTextExtractor', pdfTextExtractor(pdfFile, templateFile));
-  const handleFileInputChange = e => {
+  const handlePdfFileChange = e => {
     const file = e.target.files[0];
     if (file) {
       file.arrayBuffer().then(buffer => {
@@ -40,16 +22,14 @@ function App() {
       setPdfFile(null);
     }
   };
-
   const handleTemplateFileChange = e => {
     const uploadedFile = e.target.files[0];
     if (uploadedFile) {
       uploadedFile.text().then(text => {
-        setTemplate(JSON.parse(text));
-        setTemplateFile(text);
+        setTemplateFile(JSON.parse(text));
       });
     } else {
-      setTemplate(null);
+      setTemplateFile(null);
     }
   };
 
@@ -58,7 +38,7 @@ function App() {
       <FileInput
         labelText="Select a pdf file:"
         accept=".pdf"
-        onChange={handleFileInputChange}
+        onChange={handlePdfFileChange}
         htmlFor="pdfInput"
       />
       <FileInput
@@ -83,8 +63,8 @@ function App() {
           sampleTable.json
         </a>
       </span>
-      <PdfTable items={pdfItems} template={template} />
-      <TemplateCreator file={pdfFile} chars={pdfItems} />
+      <PdfTable pdf={pdfFile} template={templateFile} />
+      <TemplateCreator file={pdfFile} />
     </div>
   );
 }
