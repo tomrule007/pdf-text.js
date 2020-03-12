@@ -7,10 +7,9 @@ import pdfjsWorker from 'pdfjs-dist/build/pdf.worker.entry';
 
 pdfjs.GlobalWorkerOptions.workerSrc = pdfjsWorker;
 
-export default function TemplateCreator({ file, chars }) {
+export default function TemplateCreator({ file }) {
   const canvasRef = useRef(null);
   const fabricCanvasRef = useRef(null);
-  const [charInfo, setCharInfo] = useState([]);
   const [template, setTemplate] = useState({
     top: null,
     left: null,
@@ -18,11 +17,6 @@ export default function TemplateCreator({ file, chars }) {
     right: null,
     columns: []
   });
-  useEffect(() => {
-    if (chars && chars.pages) {
-      setCharInfo(chars.pages[0]);
-    }
-  }, [chars]);
   useEffect(() => {
     const fetchPdf = async () => {
       const loadingTask = pdfjs.getDocument(file);
@@ -138,27 +132,6 @@ export default function TemplateCreator({ file, chars }) {
     if (file !== null) fetchPdf();
   }, [file]);
 
-  const tableChars = charInfo.filter(char => {
-    const isInbounds =
-      template.top &&
-      char.y >= template.top &&
-      char.y <= template.bottom &&
-      char.x <= template.right &&
-      char.x >= template.left;
-    // console.log(char.y, isInbounds);
-    return isInbounds;
-  });
-
-  const columnChars = tableChars.reduce((acc, char) => {
-    const { x } = char;
-    const columnID = template.columns.findIndex(columnX => x < columnX);
-
-    acc[columnID] =
-      acc[columnID] === undefined ? [char] : [...acc[columnID], char];
-
-    return acc;
-  }, []);
-
   return (
     <>
       <canvas
@@ -173,34 +146,11 @@ export default function TemplateCreator({ file, chars }) {
         height={500}
         style={{ border: '1px solid black' }}
       />
-      <p>
-        Total Chars: {charInfo.length} Table Chars: {tableChars.length}
-      </p>
-      <p>table boundaries: {JSON.stringify(template)}</p>
-      {columnChars.map((_, columnIndex) => (
-        <span>{`Column Index ${columnIndex}`}</span>
-      ))}
-      <ul>
-        {tableChars.map(char => (
-          <li>{`${char.text} (x: ${char.x.toFixed(2)} y: ${char.y.toFixed(
-            2
-          )})`}</li>
-        ))}
-      </ul>
+      <p>Template: {JSON.stringify(template)}</p>
     </>
   );
 }
 
 TemplateCreator.propTypes = {
-  file: PropTypes.shape({
-    data: PropTypes.array.isRequired
-  }),
-  chars: PropTypes.shape({
-    pages: PropTypes.array.isRequired
-  })
-};
-
-TemplateCreator.defaultProps = {
-  file: null,
-  chars: null
+  file: PropTypes.oneOfType([PropTypes.string, PropTypes.array]).isRequired
 };
