@@ -1,12 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
-import ReactTable from './ReactTable';
-import pdfTextExtractor from '../pdfTextExtractor/pdfTextExtractor';
+import ReactTable from './ReactTable/ReactTable';
+import pdfText from '../pdfText/pdfText';
 
 export default function PdfTable({ pdf, template }) {
   const [pdfData, setPdfData] = useState({});
   useEffect(() => {
-    if (pdf && template) pdfTextExtractor(pdf, template).then(setPdfData);
+    if (pdf && template) pdfText(pdf, template).then(setPdfData);
   }, [pdf, template]);
 
   return (

@@ -1,7 +1,7 @@
 import { compose, map } from 'crocks';
 import merge from 'deepmerge';
 
-import getPdfText from './pdfText';
+import getPdfChars from './pdfChars';
 
 // toRows :: [a] -> [b]
 const toRows = chars => {
@@ -98,7 +98,7 @@ const selectParser = (type, rules) => {
 
 export default async function pdfTextExtractor(src, template) {
   const { captureList, options } = template;
-  const pdf = await getPdfText(src, options && options.charCodeOffset);
+  const pdf = await getPdfChars(src, options && options.charCodeOffset);
   const pagesOfChars = pdf.pages;
   const data = captureList.map(({ name, type, rules }) => {
     const parse = compose(
