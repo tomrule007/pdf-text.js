@@ -1,16 +1,16 @@
 import React, { useState } from 'react';
 
 import FileInput from './components/FileInput';
-import PdfTable from './components/PdfTable';
+import PdfData from './components/PdfData';
 
-import samplePdfTemplateRefactor from './sampleFiles/invoice.json';
-import samplePdf from './data/08745695.pdf';
+import defaultTemplateFile from './sampleFiles/sampleTables.json';
+import defaultPdfFile from './sampleFiles/sampleTables.pdf';
 
 import TemplateCreator from './components/TemplateCreator';
 
 function App() {
-  const [templateFile, setTemplateFile] = useState(samplePdfTemplateRefactor);
-  const [pdfFile, setPdfFile] = useState(samplePdf);
+  const [templateFile, setTemplateFile] = useState(defaultTemplateFile);
+  const [pdfFile, setPdfFile] = useState(defaultPdfFile);
 
   const handlePdfFileChange = e => {
     const file = e.target.files[0];
@@ -50,20 +50,27 @@ function App() {
       <span>
         {'Download: '}
         <a
-          href={`${process.env.PUBLIC_URL}/sampleTables.pdf`}
+          href={`${process.env.PUBLIC_URL}/pdfs/sampleTables.pdf`}
           download="sampleTable.pdf"
         >
           sampleTable.pdf
         </a>
         {' / '}
         <a
-          href={`${process.env.PUBLIC_URL}/sampleTables.json`}
+          href={`${process.env.PUBLIC_URL}/templates/sampleTables.json`}
           download="sampleTable.json"
         >
           sampleTable.json
         </a>
+        {' / '}
+        <a
+          href={`${process.env.PUBLIC_URL}/templates/invoice.json`}
+          download="invoice.json"
+        >
+          invoice.json
+        </a>
       </span>
-      <PdfTable pdf={pdfFile} template={templateFile} />
+      <PdfData pdf={pdfFile} template={templateFile} />
       <TemplateCreator file={pdfFile} />
     </div>
   );

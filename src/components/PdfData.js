@@ -2,7 +2,6 @@ import React, { useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
 import ReactTable from './ReactTable';
 import pdfTextExtractor from '../pdfTextExtractor/pdfTextExtractor';
-import './PdfTable.css';
 
 export default function PdfTable({ pdf, template }) {
   const [pdfData, setPdfData] = useState({});
@@ -10,15 +9,17 @@ export default function PdfTable({ pdf, template }) {
     if (pdf && template) pdfTextExtractor(pdf, template).then(setPdfData);
   }, [pdf, template]);
 
-  const { invoice } = pdfData;
-
-  if (!invoice) return null;
-
   return (
-    <>
-      <h3>Invoice</h3>
-      <ReactTable data={invoice.data} columns={invoice.columns} />
-    </>
+    <div>
+      {Object.entries(pdfData).map(([key, value]) => (
+        <div key={key}>
+          <h3>{key}</h3>
+          {value ? (
+            <ReactTable data={value.data} columns={value.columns} />
+          ) : null}
+        </div>
+      ))}
+    </div>
   );
 }
 

@@ -98,7 +98,7 @@ const selectParser = (type, rules) => {
 
 export default async function pdfTextExtractor(src, template) {
   const { captureList, options } = template;
-  const pdf = await getPdfText(src, options.charCodeOffset);
+  const pdf = await getPdfText(src, options && options.charCodeOffset);
   const pagesOfChars = pdf.pages;
   const data = captureList.map(({ name, type, rules }) => {
     const parse = compose(

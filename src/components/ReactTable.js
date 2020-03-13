@@ -2,6 +2,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { useTable } from 'react-table';
+import './ReactTable.css';
 
 function ReactTable({ columns, data }) {
   // Use the state and functions returned from useTable to build your UI
