@@ -5,14 +5,11 @@ import { fabric } from 'fabric';
 import pdfjs from 'pdfjs-dist';
 import pdfjsWorker from 'pdfjs-dist/build/pdf.worker.entry';
 
-import fillTextIntercept from '../utilities/fillTextIntercept';
-
 pdfjs.GlobalWorkerOptions.workerSrc = pdfjsWorker;
 
 export default function TemplateCreator({ file }) {
   const canvasRef = useRef(null);
   const fabricCanvasRef = useRef(null);
-  const [charInfo, setCharInfo] = useState([]);
   const [template, setTemplate] = useState({
     top: null,
     left: null,
@@ -20,14 +17,9 @@ export default function TemplateCreator({ file }) {
     right: null,
     columns: []
   });
-
   useEffect(() => {
     const fetchPdf = async () => {
-      const pdfData = await file.arrayBuffer();
-      const loadingTask = pdfjs.getDocument({
-        data: pdfData
-        //  disableFontFace: true
-      });
+      const loadingTask = pdfjs.getDocument(file);
 
       const pdf = await loadingTask.promise;
 
@@ -45,8 +37,6 @@ export default function TemplateCreator({ file }) {
       canvas.height = viewport.height;
       canvas.width = viewport.width;
 
-      const charArray = fillTextIntercept(context);
-
       // Render PDF page into canvas context
       const renderContext = {
         canvasContext: context,
@@ -56,7 +46,6 @@ export default function TemplateCreator({ file }) {
 
       await renderTask.promise;
 
-      setCharInfo(charArray);
       // convert canvas to background image to import into fabric canvas
       const bg = canvas.toDataURL('image/png');
       const fabricCanvas = new fabric.Canvas(fabricCanvasRef.current, {
@@ -143,27 +132,6 @@ export default function TemplateCreator({ file }) {
     if (file !== null) fetchPdf();
   }, [file]);
 
-  const tableChars = charInfo.filter(char => {
-    const isInbounds =
-      template.top &&
-      char.y >= template.top &&
-      char.y <= template.bottom &&
-      char.x <= template.right &&
-      char.x >= template.left;
-    // console.log(char.y, isInbounds);
-    return isInbounds;
-  });
-
-  const columnChars = tableChars.reduce((acc, char) => {
-    const { x } = char;
-    const columnID = template.columns.findIndex(columnX => x < columnX);
-
-    acc[columnID] =
-      acc[columnID] === undefined ? [char] : [...acc[columnID], char];
-
-    return acc;
-  }, []);
-
   return (
     <>
       <canvas
@@ -172,31 +140,17 @@ export default function TemplateCreator({ file }) {
         height={window.innerHeight}
         style={{ display: 'none' }}
       />
-      <canvas ref={fabricCanvasRef} width={500} height={500} />
-      <p>
-        Total Chars: {charInfo.length} Table Chars: {tableChars.length}
-      </p>
-      <p>table boundaries: {JSON.stringify(template)}</p>
-      {columnChars.map((_, columnIndex) => (
-        <span>{`Column Index ${columnIndex}`}</span>
-      ))}
-      <ul>
-        {tableChars.map(char => (
-          <li>{`${char.text} (x: ${char.x.toFixed(2)} y: ${char.y.toFixed(
-            2
-          )})`}</li>
-        ))}
-      </ul>
+      <canvas
+        ref={fabricCanvasRef}
+        width={500}
+        height={500}
+        style={{ border: '1px solid black' }}
+      />
+      <p>Template: {JSON.stringify(template)}</p>
     </>
   );
 }
 
 TemplateCreator.propTypes = {
-  file: PropTypes.shape({
-    arrayBuffer: PropTypes.func.isRequired
-  })
-};
-
-TemplateCreator.defaultProps = {
-  file: null
+  file: PropTypes.oneOfType([PropTypes.string, PropTypes.array]).isRequired
 };

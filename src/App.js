@@ -1,46 +1,35 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 
 import FileInput from './components/FileInput';
-import pdfText from './utilities/pdfText';
-import PdfTable from './components/PdfTable';
+import PdfData from './components/PdfData';
 
-import samplePdfTemplate from './sampleFiles/sampleTables.json';
-import samplePdf from './sampleFiles/sampleTables.pdf';
+import defaultTemplateFile from './sampleFiles/sampleTables.json';
+import defaultPdfFile from './sampleFiles/sampleTables.pdf';
+
+import TemplateCreator from './components/TemplateCreator';
 
 function App() {
-  const [template, setTemplate] = useState(samplePdfTemplate);
-  const [pdfFile, setPdfFile] = useState(samplePdf);
-  const [pdfItems, setPdfItems] = useState(null);
+  const [templateFile, setTemplateFile] = useState(defaultTemplateFile);
+  const [pdfFile, setPdfFile] = useState(defaultPdfFile);
 
-  useEffect(() => {
-    if (pdfFile === null) {
-      setPdfItems(null);
-    } else {
-      pdfText(pdfFile).then(items => {
-        setPdfItems(items);
-      });
-    }
-  }, [template, pdfFile]);
-
-  const handleFileInputChange = e => {
+  const handlePdfFileChange = e => {
     const file = e.target.files[0];
     if (file) {
       file.arrayBuffer().then(buffer => {
-        setPdfFile({ data: buffer });
+        setPdfFile(buffer);
       });
     } else {
       setPdfFile(null);
     }
   };
-
   const handleTemplateFileChange = e => {
     const uploadedFile = e.target.files[0];
     if (uploadedFile) {
       uploadedFile.text().then(text => {
-        setTemplate(JSON.parse(text));
+        setTemplateFile(JSON.parse(text));
       });
     } else {
-      setTemplate(null);
+      setTemplateFile(null);
     }
   };
 
@@ -49,7 +38,7 @@ function App() {
       <FileInput
         labelText="Select a pdf file:"
         accept=".pdf"
-        onChange={handleFileInputChange}
+        onChange={handlePdfFileChange}
         htmlFor="pdfInput"
       />
       <FileInput
@@ -61,20 +50,28 @@ function App() {
       <span>
         {'Download: '}
         <a
-          href={`${process.env.PUBLIC_URL}/sampleTables.pdf`}
+          href={`${process.env.PUBLIC_URL}/pdfs/sampleTables.pdf`}
           download="sampleTable.pdf"
         >
           sampleTable.pdf
         </a>
         {' / '}
         <a
-          href={`${process.env.PUBLIC_URL}/sampleTables.json`}
+          href={`${process.env.PUBLIC_URL}/templates/sampleTables.json`}
           download="sampleTable.json"
         >
           sampleTable.json
         </a>
+        {' / '}
+        <a
+          href={`${process.env.PUBLIC_URL}/templates/invoice.json`}
+          download="invoice.json"
+        >
+          invoice.json
+        </a>
       </span>
-      <PdfTable items={pdfItems} template={template} />
+      <PdfData pdf={pdfFile} template={templateFile} />
+      <TemplateCreator file={pdfFile} />
     </div>
   );
 }
