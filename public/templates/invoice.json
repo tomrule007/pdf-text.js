@@ -33,15 +33,105 @@
       }
     },
     {
-      "name": "qtyRet",
+      "name": "storeName",
       "type": "value",
       "rules": {
-        "0": {
+        "all": {
           "bounds": {
-            "top": 257,
-            "left": 19,
-            "bottom": 667,
-            "right": 1164
+            "top": 69,
+            "left": 34,
+            "bottom": 90,
+            "right": 208
+          }
+        }
+      },
+      "validation": { "equals": "qtyRet" }
+    },
+    {
+      "name": "deliveryDate",
+      "type": "value",
+      "rules": {
+        "all": {
+          "bounds": {
+            "top": 85,
+            "left": 936,
+            "bottom": 110,
+            "right": 1050
+          }
+        }
+      },
+      "validation": { "equals": "qtyRet" }
+    },
+    {
+      "name": "invoiceNumber",
+      "type": "value",
+      "rules": {
+        "all": {
+          "bounds": {
+            "top": 85,
+            "left": 800,
+            "bottom": 107,
+            "right": 900
+          }
+        }
+      },
+      "validation": { "equals": "qtyRet" }
+    },
+    {
+      "name": "page",
+      "type": "value",
+      "rules": {
+        "all": {
+          "bounds": {
+            "top": 125,
+            "left": 911,
+            "bottom": 147,
+            "right": 955
+          }
+        }
+      },
+      "validation": { "equals": "qtyRet" }
+    },
+    {
+      "name": "totalCost",
+      "type": "value",
+      "rules": {
+        "all": {
+          "bounds": {
+            "top": 804,
+            "left": 992,
+            "bottom": 894,
+            "right": 1126
+          }
+        }
+      },
+      "validation": { "equals": "qtyRet" }
+    },
+    {
+      "name": "boxCount",
+      "type": "value",
+      "rules": {
+        "all": {
+          "bounds": {
+            "top": 770,
+            "left": 37,
+            "bottom": 806,
+            "right": 216
+          }
+        }
+      },
+      "validation": { "equals": "qtyRet" }
+    },
+    {
+      "name": "totalGrossShipWeight",
+      "type": "value",
+      "rules": {
+        "all": {
+          "bounds": {
+            "top": 768,
+            "left": 368,
+            "bottom": 789,
+            "right": 513
           }
         }
       },
