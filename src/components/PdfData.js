@@ -32,7 +32,7 @@ export default function PdfTable({ pdf, template }) {
                   <ReactTable data={value.data} columns={value.columns} />
                 </td>
               ) : (
-                <td>{value}</td>
+                <td>{`[ ${value.map(item => `"${item}"`).join(' , ')} ]`}</td>
               )}
             </tr>
           ))}
