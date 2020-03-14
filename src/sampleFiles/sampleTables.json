@@ -65,6 +65,34 @@
           { "x": 832, "Header": "IP-address", "accessor": "ip" }
         ]
       }
+    },
+    {
+      "name": "tableTwoTitle",
+      "type": "value",
+      "rules": {
+        "all": {
+          "bounds": {
+            "top": 341,
+            "left": 56,
+            "bottom": 380,
+            "right": 307
+          }
+        }
+      }
+    },
+    {
+      "name": "tableThreeTitle",
+      "type": "value",
+      "rules": {
+        "all": {
+          "bounds": {
+            "top": 652,
+            "left": 56,
+            "bottom": 691,
+            "right": 307
+          }
+        }
+      }
     }
   ]
 }

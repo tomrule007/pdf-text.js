@@ -65,10 +65,16 @@ const parseTable = rules => pagesOfRows => {
   // return tables
   return { data: formattedCells, columns: rules.columns };
 };
-// TODO: finish valueParse
-// eslint-disable-next-line no-unused-vars
-const valueParse = rules => pagesOfChars => {
-  return null;
+
+const valueParse = pagesOfChars => {
+  const pages = pagesOfChars.map(page => {
+    const rows = page.map(row => {
+      const chars = row[1];
+      return formatCell(chars);
+    });
+    return rows.join('/n');
+  });
+  return pages;
 };
 const isBetween = (start, stop) => value => {
   const [min, max] = start < stop ? [start, stop] : [stop, start];
@@ -89,7 +95,7 @@ const selectParser = (type, rules) => {
     case 'table':
       return parseTable(rules);
     case 'value':
-      return valueParse(rules);
+      return valueParse;
 
     default:
       throw new Error(`selectParser: invalid parse type ${type}`);

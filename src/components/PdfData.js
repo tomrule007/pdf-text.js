@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
 import ReactTable from './ReactTable/ReactTable';
 import pdfText from '../pdfText/pdfText';
+import './PdfData.css';
 
 export default function PdfTable({ pdf, template }) {
   const [pdfData, setPdfData] = useState({});
@@ -11,14 +12,32 @@ export default function PdfTable({ pdf, template }) {
 
   return (
     <div>
-      {Object.entries(pdfData).map(([key, value]) => (
-        <div key={key}>
-          <h3>{key}</h3>
-          {value ? (
-            <ReactTable data={value.data} columns={value.columns} />
-          ) : null}
-        </div>
-      ))}
+      <h2>Parsed Values:</h2>
+      <table>
+        <thead>
+          <tr>
+            <th>type</th>
+            <th>key</th>
+            <th>value</th>
+          </tr>
+        </thead>
+        <tbody>
+          {Object.entries(pdfData).map(([key, value]) => (
+            <tr key={key}>
+              <td>{value && value.columns ? 'table' : 'value'}</td>
+              <td>{key}</td>
+
+              {value && value.columns ? (
+                <td>
+                  <ReactTable data={value.data} columns={value.columns} />
+                </td>
+              ) : (
+                <td>{value}</td>
+              )}
+            </tr>
+          ))}
+        </tbody>
+      </table>
     </div>
   );
 }
