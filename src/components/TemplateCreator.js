@@ -10,6 +10,8 @@ pdfjs.GlobalWorkerOptions.workerSrc = pdfjsWorker;
 export default function TemplateCreator({ file }) {
   const canvasRef = useRef(null);
   const fabricCanvasRef = useRef(null);
+  const [pageNumber, setPageNumber] = useState(1);
+  const [numPages, setNumPages] = useState(null);
   const [template, setTemplate] = useState({
     top: null,
     left: null,
@@ -22,10 +24,8 @@ export default function TemplateCreator({ file }) {
       const loadingTask = pdfjs.getDocument(file);
 
       const pdf = await loadingTask.promise;
-
-      const firstPageNumber = 1;
-
-      const page = await pdf.getPage(firstPageNumber);
+      setNumPages(pdf.numPages);
+      const page = await pdf.getPage(pageNumber);
 
       const scale = 1.5;
       const viewport = page.getViewport({ scale });
@@ -130,10 +130,25 @@ export default function TemplateCreator({ file }) {
     };
 
     if (file !== null) fetchPdf();
-  }, [file]);
+  }, [file, pageNumber]);
+
+  const handlePreviousClick = () => {
+    setPageNumber(pageNumber - 1 || 1);
+  };
+
+  const handleNextClick = () => {
+    if (numPages === pageNumber) return;
+    setPageNumber(pageNumber + 1);
+  };
 
   return (
     <>
+      <button type="button" onClick={handlePreviousClick}>
+        Prev.
+      </button>
+      <button type="button" onClick={handleNextClick}>
+        Next
+      </button>
       <canvas
         ref={canvasRef}
         width={window.innerWidth}
