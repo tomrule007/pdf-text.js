@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
+import pdfText from 'pdf-template-parse';
 import ReactTable from './ReactTable/ReactTable';
-import pdfText from '../pdfText/pdfText';
 import './PdfData.css';
 
 export default function PdfTable({ pdf, template }) {
