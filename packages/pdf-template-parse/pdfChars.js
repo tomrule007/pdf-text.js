@@ -47,6 +47,7 @@ function fillTextIntercept(ctx, storageObject, charCodeOffset) {
     */
     // eslint-disable-next-line no-param-reassign
     storageObject.chars[storageObject.chars.length] = {
+      charCode: text.charCodeAt(0),
       text: realChar,
       x: realX,
       y: realY,
