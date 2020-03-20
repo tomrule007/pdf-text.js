@@ -1,0 +1,46 @@
+{
+  "captureList": [
+    {
+      "name": "firstWord",
+      "type": "value",
+      "rules": {
+        "all": {
+          "bounds": {
+            "top": 220,
+            "left": 70,
+            "bottom": 230,
+            "right": 140
+          }
+        }
+      }
+    },
+    {
+      "name": "secondWord",
+      "type": "value",
+      "rules": {
+        "all": {
+          "bounds": {
+            "top": 220,
+            "left": 150,
+            "bottom": 230,
+            "right": 200
+          }
+        }
+      }
+    },
+    {
+      "name": "fullPhrase",
+      "type": "value",
+      "rules": {
+        "all": {
+          "bounds": {
+            "top": 220,
+            "left": 70,
+            "bottom": 230,
+            "right": 200
+          }
+        }
+      }
+    }
+  ]
+}

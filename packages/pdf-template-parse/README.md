@@ -1,29 +1,128 @@
 # pdf-template-parse [![GitHub license](https://img.shields.io/badge/license-MIT-blue.svg)](https://github.com/tomrule007/pdf-text.js/blob/development/LICENSE) [![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)](https://github.com/tomrule007/pdf-text.js/blob/development/CONTRIBUTING.md)
 
-## A JavaScript frontend cross-browser compatible "PDF parser w/ template Engine" to convert pdf documents into organized data objects
+## JS Front-end PDF parser with template engine to convert pdf documents into organized data objects
 
-A two phase process were the pdf text characters are first extracted and then processed with a template engine to turn the characters array into meaningful data objects.
+Link to table parsing demo: [Click Here](https://pdftext.netlify.com/)
 
-### pdf parse phase
+## Install
 
-Text is extracted one character at a time while recording the coordinates (x,y) and character width. This allows you to build custom filters/reducers to extract the data you are after.
+```bash
+$npm install pdf-template-parse
+```
 
-### template engine
+### pdfParse - just character & location extraction
 
-Included template engine will extract and combine table data or values using a user provided template file that includes the coordinate bounds of the desired items.
+```js
+import { pdfParse } from 'pdf-template-parse';
+```
 
-## ToDo
+`pdfParse` takes a `pdf` file and returns a promise. Promise resolves all the character data (character code, text, x, y, width) found in the provided document allowing the user to process the raw data themselves.
 
-- Readme
-  - add installation instructions
-  - add how to use instructions
+### pdfTemplateParse - character extraction & templating
+
+```js
+import pdfTemplateParse from 'pdf-template-parse';
+```
+
+`pdfTemplateParse` takes a `pdf` file and a `template` file and returns a promise. Promise resolves all the values / tables declared in the template file. (see example below for sample template file)
+
+# Example Usage
+
+## Example 1: helloworld.pdf
+
+sample pdf download: [helloworld.pdf](/src/sampleFiles/helloworld.pdf)
+
+```js
+import { pdfParse } from 'pdf-template-parse';
+import pdf from './samplePdf/helloWorld.pdf';
+
+const characterData = pdfParse(pdf);
+console.log({ characterData });
+```
+
+Output: (console screenshot)
+![example one console screenshot](./readmeImages/exampleOneOutput.png)
+
+\*\* Note: the promise will not resolve if the browser tab is not visible.
+
+## Example 2: **helloworld.pdf w/ template file**
+
+Template file: [helloworld.json](/src/sampleFiles/helloworld.json)
+
+```json
+{
+  "captureList": [
+    {
+      "name": "firstWord",
+      "type": "value",
+      "rules": {
+        "all": {
+          "bounds": {
+            "top": 220,
+            "left": 70,
+            "bottom": 230,
+            "right": 140
+          }
+        }
+      }
+    },
+    {
+      "name": "secondWord",
+      "type": "value",
+      "rules": {
+        "all": {
+          "bounds": {
+            "top": 220,
+            "left": 150,
+            "bottom": 230,
+            "right": 200
+          }
+        }
+      }
+    },
+    {
+      "name": "fullPhrase",
+      "type": "value",
+      "rules": {
+        "all": {
+          "bounds": {
+            "top": 220,
+            "left": 70,
+            "bottom": 230,
+            "right": 200
+          }
+        }
+      }
+    }
+  ]
+}
+```
+
+Code:
+
+```js
+import pdfTemplateParse from 'pdf-template-parse';
+import pdf from './samplePdf/helloWorld.pdf';
+import template from './sampleFile/helloworld.json';
+
+const data = pdfTemplateParse(pdf, template);
+console.log({ data });
+```
+
+Output: (console screenshot)
+
+![example two console screenshot](./readmeImages/exampleTwoOutput.png)
+
+\*\* Note: the promise will not resolve if the browser tab is not visible.
+
+# Todo
+
+- Add sampleTable.pdf example (to demo table parsing)
 - Add tests
-- replace char_offset option with character map detection
-
-## Technologies used 🛠️
-
-- [React](https://reactjs.org/) - Front-End JavaScript library
-- [pdf.js](https://github.com/mozilla/pdf.js) - PDF Reader in JavaScript
+- Replace char_offset option with character map detection
+- Add value validation.
+- Add template validation.
+- Add node support (either remove canvas dependancy or add node canvas package)
 
 ## Authors
 
