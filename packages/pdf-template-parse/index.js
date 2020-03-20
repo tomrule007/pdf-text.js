@@ -2,6 +2,6 @@ import getPdfChars from './pdfChars';
 import pdfText from './pdfText';
 
 const pdfTemplateParse = pdfText;
-export const pdfParse = getPdfChars;
+const pdfParse = getPdfChars;
 
-export default pdfTemplateParse;
+export { pdfTemplateParse as default, pdfParse };
