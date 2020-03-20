@@ -41,7 +41,7 @@ console.log({ characterData });
 ```
 
 Output: (console screenshot)
-![example one console screenshot](./readmeImages/exampleOneOutput.png)
+![example one console screenshot](/packages/pdf-template-parse/readmeImages/exampleOneOutput.png)
 
 \*\* Note: the promise will not resolve if the browser tab is not visible.
 
@@ -111,7 +111,7 @@ console.log({ data });
 
 Output: (console screenshot)
 
-![example two console screenshot](./readmeImages/exampleTwoOutput.png)
+![example two console screenshot](/packages/pdf-template-parse/readmeImages/exampleTwoOutput.png)
 
 \*\* Note: the promise will not resolve if the browser tab is not visible.
 
