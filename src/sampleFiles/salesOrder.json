@@ -1,0 +1,95 @@
+{
+  "options": {
+    "charCodeOffset": 57311
+  },
+  "captureList": [
+    {
+      "name": "salesOrder",
+      "type": "table",
+      "rules": {
+        "0": {
+          "bounds": {
+            "top": 208,
+            "left": 50,
+            "bottom": 1141,
+            "right": 791
+          }
+        },
+        "all": {
+          "bounds": {
+            "top": 40,
+            "left": 50,
+            "bottom": 1141,
+            "right": 791
+          }
+        },
+        "mergeRules": { "requiredKey": "description", "direction": "up" },
+        "columns": [
+          { "x": 316, "Header": "Description", "accessor": "description" },
+          { "x": 350, "Header": "threeDaysAgo", "accessor": "threeDaysAgo" },
+          { "x": 383, "Header": "twoDaysAgo", "accessor": "twoDaysAgo" },
+          { "x": 416, "Header": "oneDayAgo", "accessor": "oneDayAgo" },
+          { "x": 605, "Header": "OGC Comments", "accessor": "ogcComments" },
+          { "x": 713, "Header": "Store Comments", "accessor": "storeComments" },
+          { "x": 792, "Header": "Total Order", "accessor": "totalOrder" }
+        ]
+      }
+    },
+    {
+      "name": "title",
+      "type": "value",
+      "rules": {
+        "0": {
+          "bounds": {
+            "top": 113,
+            "left": 40,
+            "bottom": 150,
+            "right": 242
+          }
+        }
+      }
+    },
+    {
+      "name": "leftDate",
+      "type": "value",
+      "rules": {
+        "0": {
+          "bounds": {
+            "top": 180,
+            "left": 314,
+            "bottom": 207,
+            "right": 350
+          }
+        }
+      }
+    },
+    {
+      "name": "middleDate",
+      "type": "value",
+      "rules": {
+        "0": {
+          "bounds": {
+            "top": 180,
+            "left": 351,
+            "bottom": 207,
+            "right": 380
+          }
+        }
+      }
+    },
+    {
+      "name": "rightDate",
+      "type": "value",
+      "rules": {
+        "0": {
+          "bounds": {
+            "top": 180,
+            "left": 381,
+            "bottom": 207,
+            "right": 417
+          }
+        }
+      }
+    }
+  ]
+}
