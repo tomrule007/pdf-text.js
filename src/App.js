@@ -1,77 +1,57 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import pdfText from 'pdf-template-parse';
 
 import FileInput from './components/FileInput';
-import PdfData from './components/PdfData';
+import SalesOrderDiffTable from './components/SalesOrderDiffTable/SalesOrderDiffTable';
 
-import defaultTemplateFile from './sampleFiles/sampleTables.json';
-import defaultPdfFile from './sampleFiles/sampleTables.pdf';
-
-import TemplateCreator from './components/TemplateCreator';
+import defaultTemplateFile from './sampleFiles/salesOrder.json';
+import defaultPdfFile from './data/SalesOrder_2020324.pdf';
+import eveningPdfFile from './data/SalesOrder_2020324 (1).pdf';
 
 function App() {
-  const [templateFile, setTemplateFile] = useState(defaultTemplateFile);
-  const [pdfFile, setPdfFile] = useState(defaultPdfFile);
-
-  const handlePdfFileChange = e => {
+  const [morningPdfData, setMorningPdfData] = useState(null);
+  const [eveningPdfData, setEveningPdfData] = useState(null);
+  console.log(morningPdfData);
+  useEffect(() => {
+    pdfText(defaultPdfFile, defaultTemplateFile).then(setMorningPdfData);
+    pdfText(eveningPdfFile, defaultTemplateFile).then(setEveningPdfData);
+  }, []);
+  const handleMorningPdf = e => {
+    console.log(e);
     const file = e.target.files[0];
     if (file) {
       file.arrayBuffer().then(buffer => {
-        setPdfFile(buffer);
+        pdfText(buffer, defaultTemplateFile).then(morningPdfData);
       });
-    } else {
-      setPdfFile(null);
     }
   };
-  const handleTemplateFileChange = e => {
-    const uploadedFile = e.target.files[0];
-    if (uploadedFile) {
-      uploadedFile.text().then(text => {
-        setTemplateFile(JSON.parse(text));
+  const handleEveningPdf = e => {
+    const file = e.target.files[0];
+    if (file) {
+      file.arrayBuffer().then(buffer => {
+        pdfText(buffer, defaultTemplateFile).then(eveningPdfData);
       });
-    } else {
-      setTemplateFile(null);
     }
   };
 
   return (
     <div className="App">
       <FileInput
-        labelText="Select a pdf file:"
+        labelText="Morning Sales Order:"
         accept=".pdf"
-        onChange={handlePdfFileChange}
-        htmlFor="pdfInput"
+        onChange={handleMorningPdf}
+        htmlFor="pdfInput1"
       />
       <FileInput
-        labelText="Select a template file:"
-        accept=".json"
-        onChange={handleTemplateFileChange}
-        htmlFor="templateInput"
+        labelText="Confirmation Sales Order:"
+        accept=".pdf"
+        onChange={handleEveningPdf}
+        htmlFor="pdfInput2"
       />
-      <span>
-        {'Download: '}
-        <a
-          href={`${process.env.PUBLIC_URL}/pdfs/sampleTables.pdf`}
-          download="sampleTable.pdf"
-        >
-          sampleTable.pdf
-        </a>
-        {' / '}
-        <a
-          href={`${process.env.PUBLIC_URL}/templates/sampleTables.json`}
-          download="sampleTable.json"
-        >
-          sampleTable.json
-        </a>
-        {' / '}
-        <a
-          href={`${process.env.PUBLIC_URL}/templates/invoice.json`}
-          download="invoice.json"
-        >
-          invoice.json
-        </a>
-      </span>
-      <PdfData pdf={pdfFile} template={templateFile} />
-      <TemplateCreator file={pdfFile} />
+      <SalesOrderDiffTable
+        morningSalesOrder={morningPdfData}
+        eveningSalesOrder={eveningPdfData}
+      />
     </div>
   );
 }
