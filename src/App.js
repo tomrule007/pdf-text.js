@@ -1,13 +1,8 @@
-import React, { useState, useEffect } from 'react';
-import pdfText from 'pdf-template-parse';
+import React, { useState } from 'react';
 import Papa from 'papaparse';
 
 import FileInput from './components/FileInput';
 import SalesOrderDiffTable from './components/SalesOrderDiffTable/SalesOrderDiffTable';
-
-import defaultTemplateFile from './sampleFiles/salesOrder.json';
-import defaultPdfFile from './data/SalesOrder_2020324.pdf';
-import eveningPdfFile from './data/SalesOrder_2020324 (1).pdf';
 
 const parseSalesOrderCsv = file =>
   new Promise((resolve, reject) => {
@@ -18,7 +13,8 @@ const parseSalesOrderCsv = file =>
   });
 
 const column = string => ({ Header: string, accessor: string });
-const SalesOrderCsvToData = csv => {
+const salesOrderCsvToData = results => {
+  const csv = results.data;
   // Sales Oder column Headers
   const description = csv[0][0];
   const pastDelivery = csv[0][1];
@@ -36,11 +32,12 @@ const SalesOrderCsvToData = csv => {
   const totalOrder = csv[0][11];
 
   const columns = [
-    column('Locked'),
+    { ...column(totalOrder), Header: 'Total' },
+    // column('Locked'),
     column(description),
     {
       ...column(pastDelivery),
-      column: [
+      columns: [
         column(day7),
         column(day6),
         column(day5),
@@ -50,14 +47,13 @@ const SalesOrderCsvToData = csv => {
         column(day1)
       ]
     },
-    column(ogcComments),
-    column(groupComments),
-    column(storeComments),
-    column(totalOrder)
+    column(ogcComments)
+    //  column(groupComments),
+    //  column(storeComments),
   ];
 
   const data = csv.slice(2).map(row => ({
-    Locked: !row[11].includes('(i)'),
+    Locked: !row[11].includes('(i)') ? 'y' : 'n',
     [description]: row[0],
     [day7]: row[1],
     [day6]: row[2],
@@ -68,8 +64,8 @@ const SalesOrderCsvToData = csv => {
     [day1]: row[7],
     [ogcComments]: row[8],
     [groupComments]: row[9],
-    [storeComments]: row[10],
-    [totalOrder]: row[11]
+    [storeComments]: row[10].replace(' (i)', ''),
+    [totalOrder]: row[11].replace(' (i)', '')
   }));
   return { data, columns };
 };
@@ -77,18 +73,18 @@ const SalesOrderCsvToData = csv => {
 function App() {
   const [morningCsvData, setMorningCsvData] = useState(null);
   const [eveningCsvData, setEveningCsvData] = useState(null);
-
   const handleMorningCsv = e => {
     const file = e.target.files[0];
-    parseSalesOrderCsv(file).then(results => {
-      const data = SalesOrderCsvToData(results.data);
-      console.log(data);
-      setMorningCsvData(data);
-    });
+    parseSalesOrderCsv(file)
+      .then(salesOrderCsvToData)
+      .then(setMorningCsvData);
   };
 
   const handleEveningCsv = e => {
     const file = e.target.files[0];
+    parseSalesOrderCsv(file)
+      .then(salesOrderCsvToData)
+      .then(setEveningCsvData);
   };
 
   return (
@@ -105,10 +101,10 @@ function App() {
         onChange={handleEveningCsv}
         htmlFor="fileInput2"
       />
-      {/* <SalesOrderDiffTable
+      <SalesOrderDiffTable
         morningSalesOrder={morningCsvData}
         eveningSalesOrder={eveningCsvData}
-      /> */}
+      />
     </div>
   );
 }
