@@ -18,7 +18,11 @@
     "prop-types": "^15.7.2",
     "react": "^16.10.2",
     "react-dom": "^16.10.2",
+<<<<<<< HEAD
     "react-redux": "^7.2.0",
+=======
+    "react-dropzone": "^10.2.2",
+>>>>>>> Install react-dropzone
     "react-scripts": "3.2.0",
     "react-table": "^7.0.0-rc.16",
     "redux": "^4.0.5",
