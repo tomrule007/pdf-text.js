@@ -7,7 +7,6 @@ import defaultTemplateFile from '../sampleFiles/sampleTables.json';
 import defaultPdfFile from '../sampleFiles/sampleTables.pdf';
 
 import TemplateCreator from './TemplateCreator';
-import MyDropzone from './MyDropzone/MyDropzone';
 
 function App() {
   const [templateFile, setTemplateFile] = useState(defaultTemplateFile);
@@ -72,7 +71,6 @@ function App() {
         </a>
       </span>
 
-      <MyDropzone />
       <PdfData pdf={pdfFile} template={templateFile} />
       <TemplateCreator file={pdfFile} />
     </div>
