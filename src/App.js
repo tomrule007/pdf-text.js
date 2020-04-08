@@ -23,14 +23,6 @@ function App() {
   }, [files]);
   const handlePdfFileChange = e => {
     dispatch(loadFiles(e.target.files));
-    const file = e.target.files[0];
-    if (file) {
-      file.arrayBuffer().then(buffer => {
-        setPdfFile(buffer);
-      });
-    } else {
-      setPdfFile(null);
-    }
   };
   const handleTemplateFileChange = e => {
     const uploadedFile = e.target.files[0];
