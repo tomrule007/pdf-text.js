@@ -1,4 +1,5 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 
 import FileInput from './FileInput';
 import PdfData from './PdfData';
@@ -8,11 +9,20 @@ import defaultPdfFile from '../sampleFiles/sampleTables.pdf';
 
 import TemplateCreator from './TemplateCreator';
 
+import { loadFiles, str2ab } from '../feature/file/fileSlice';
+
 function App() {
+  const dispatch = useDispatch();
+  const files = useSelector(state => state.file.files);
   const [templateFile, setTemplateFile] = useState(defaultTemplateFile);
   const [pdfFile, setPdfFile] = useState(defaultPdfFile);
 
+  useEffect(() => {
+    const buffer = files[0] ? str2ab(files[0].rawData) : null;
+    setPdfFile(buffer);
+  }, [files]);
   const handlePdfFileChange = e => {
+    dispatch(loadFiles(e.target.files));
     const file = e.target.files[0];
     if (file) {
       file.arrayBuffer().then(buffer => {
