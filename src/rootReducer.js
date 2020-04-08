@@ -1,5 +1,5 @@
 import { combineReducers } from '@reduxjs/toolkit';
-import fileReducer from './feature/file/filesSlice';
+import fileReducer from './feature/file/fileSlice';
 
 const rootReducer = combineReducers({ file: fileReducer });
 
