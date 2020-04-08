@@ -1,15 +1,15 @@
 import React, { useState, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 
-import FileInput from './FileInput';
-import PdfData from './PdfData';
+import FileInput from './components/FileInput';
+import PdfData from './components/PdfData';
 
-import defaultTemplateFile from '../sampleFiles/sampleTables.json';
-import defaultPdfFile from '../sampleFiles/sampleTables.pdf';
+import defaultTemplateFile from './sampleFiles/sampleTables.json';
+import defaultPdfFile from './sampleFiles/sampleTables.pdf';
 
-import TemplateCreator from './TemplateCreator';
+import TemplateCreator from './components/TemplateCreator';
 
-import { loadFiles, str2ab } from '../feature/file/fileSlice';
+import { loadFiles, str2ab } from './feature/file/fileSlice';
 
 function App() {
   const dispatch = useDispatch();
