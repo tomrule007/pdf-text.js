@@ -18,23 +18,22 @@ function App() {
   const [pdfFile, setPdfFile] = useState(defaultPdfFile);
 
   useEffect(() => {
-    const buffer = files[0] ? str2ab(files[0].rawData) : null;
-    setPdfFile(buffer);
-  }, [files]);
-  const handlePdfFileChange = e => {
-    dispatch(loadFiles(e.target.files));
-  };
-  const handleTemplateFileChange = e => {
-    const uploadedFile = e.target.files[0];
-    if (uploadedFile) {
-      uploadedFile.text().then(text => {
-        setTemplateFile(JSON.parse(text));
-      });
-    } else {
-      setTemplateFile(null);
+    const file = files[files.length - 1];
+    if (file) {
+      switch (file.type) {
+        case 'application/pdf':
+          setPdfFile(str2ab(file.bufferString));
+          break;
+        case 'application/json':
+          setTemplateFile(JSON.parse(file.bufferString));
+          break;
+        default:
+          break;
+      }
     }
-  };
-
+  }, [files]);
+  const handlePdfFileChange = e => dispatch(loadFiles(e.target.files));
+  const handleTemplateFileChange = e => dispatch(loadFiles(e.target.files));
   return (
     <div className="App">
       <FileInput

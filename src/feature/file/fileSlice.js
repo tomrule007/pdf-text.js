@@ -3,11 +3,11 @@ import { createSlice } from '@reduxjs/toolkit';
 
 // file storage & retrieval utility functions
 export function ab2str(buf) {
-  return String.fromCharCode.apply(null, new Uint16Array(buf));
+  return String.fromCharCode.apply(null, new Uint8Array(buf));
 }
 export function str2ab(str) {
-  const buf = new ArrayBuffer(str.length * 2); // 2 bytes for each char
-  const bufView = new Uint16Array(buf);
+  const buf = new ArrayBuffer(str.length); // 2 bytes for each char
+  const bufView = new Uint8Array(buf);
   for (let i = 0, strLen = str.length; i < strLen; i += 1) {
     bufView[i] = str.charCodeAt(i);
   }
@@ -32,7 +32,7 @@ const fileSlice = createSlice({
     fileFailed: (state, action) => {
       if (state.loading === 'pending') {
         state.loading = 'error';
-        // action.payload.error (contains error msg)
+        state.error = action.payload;
       }
     }
   }
@@ -42,24 +42,24 @@ const fileSlice = createSlice({
 export const { fileLoading, fileReceived, fileFailed } = fileSlice.actions;
 
 export const loadFiles = files => async dispatch => {
-  // TODO: add multiple file support
-  const file = files[0];
+  [...files].forEach(async file => {
+    dispatch(fileLoading(file.name));
 
-  dispatch(fileLoading(file.name));
+    try {
+      const bufferString = ab2str(await file.arrayBuffer());
 
-  try {
-    const buffer = await file.arrayBuffer();
-    dispatch(
-      fileReceived({
-        name: file.name,
-        rawData: ab2str(buffer),
-        type: file.type,
-        timeReceived: Date.now()
-      })
-    );
-  } catch (error) {
-    dispatch(fileFailed(error));
-  }
+      dispatch(
+        fileReceived({
+          name: file.name,
+          bufferString,
+          type: file.type,
+          timeReceived: Date.now()
+        })
+      );
+    } catch (error) {
+      dispatch(fileFailed(error));
+    }
+  });
 };
 
 export default fileSlice.reducer;
