@@ -10,7 +10,7 @@ import defaultPdfFile from './sampleFiles/sampleTables.pdf';
 
 import TemplateCreator from './components/TemplateCreator';
 
-import { loadFiles, str2ab } from './feature/file/fileSlice';
+import { loadFiles } from './feature/file/fileSlice';
 
 function App() {
   const dispatch = useDispatch();
@@ -29,7 +29,11 @@ function App() {
             .then(setPdfFile);
           break;
         case 'application/json':
-          // setTemplateFile(JSON.parse(fileRef.));
+          localForage
+            .getItem(fileRef.key)
+            .then(file => file.text())
+            .then(JSON.parse)
+            .then(setTemplateFile);
           break;
         default:
           break;
