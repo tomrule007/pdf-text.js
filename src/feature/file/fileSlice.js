@@ -1,18 +1,6 @@
 /* eslint-disable no-param-reassign */
 import { createSlice } from '@reduxjs/toolkit';
-
-// file storage & retrieval utility functions
-export function ab2str(buf) {
-  return String.fromCharCode.apply(null, new Uint8Array(buf));
-}
-export function str2ab(str) {
-  const buf = new ArrayBuffer(str.length); // 2 bytes for each char
-  const bufView = new Uint8Array(buf);
-  for (let i = 0, strLen = str.length; i < strLen; i += 1) {
-    bufView[i] = str.charCodeAt(i);
-  }
-  return buf;
-}
+import localForage from 'localforage';
 
 const fileSlice = createSlice({
   name: 'file',
@@ -46,13 +34,16 @@ export const loadFiles = files => async dispatch => {
     dispatch(fileLoading(file.name));
 
     try {
-      const bufferString = ab2str(await file.arrayBuffer());
+      // TODO: add overwrite detection (get before setting)
+      await localForage.setItem(file.name, file);
 
       dispatch(
         fileReceived({
           name: file.name,
-          bufferString,
+          key: file.name,
           type: file.type,
+          size: file.size,
+          lastModified: file.lastModified,
           timeReceived: Date.now()
         })
       );

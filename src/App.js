@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
+import localForage from 'localforage';
 
 import FileInput from './components/FileInput';
 import PdfData from './components/PdfData';
@@ -18,14 +19,17 @@ function App() {
   const [pdfFile, setPdfFile] = useState(defaultPdfFile);
 
   useEffect(() => {
-    const file = files[files.length - 1];
-    if (file) {
-      switch (file.type) {
+    const fileRef = files[files.length - 1];
+    if (fileRef) {
+      switch (fileRef.type) {
         case 'application/pdf':
-          setPdfFile(str2ab(file.bufferString));
+          localForage
+            .getItem(fileRef.key)
+            .then(file => file.arrayBuffer())
+            .then(setPdfFile);
           break;
         case 'application/json':
-          setTemplateFile(JSON.parse(file.bufferString));
+          // setTemplateFile(JSON.parse(fileRef.));
           break;
         default:
           break;
