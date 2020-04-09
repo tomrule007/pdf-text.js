@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 import { configureStore, getDefaultMiddleware } from '@reduxjs/toolkit';
 import {
   persistStore,
@@ -9,6 +10,10 @@ import {
   PURGE,
   REGISTER
 } from 'redux-persist';
+=======
+import { configureStore } from '@reduxjs/toolkit';
+import { persistStore, persistReducer } from 'redux-persist';
+>>>>>>> Merge branch 'development' into feature/react-dropzone
 import storage from 'redux-persist/lib/storage';
 
 import rootReducer from './rootReducer';
@@ -20,12 +25,16 @@ const persistConfig = {
 const persistedReducer = persistReducer(persistConfig, rootReducer);
 
 export const store = configureStore({
+<<<<<<< HEAD
   reducer: persistedReducer,
   middleware: getDefaultMiddleware({
     serializableCheck: {
       ignoredActions: [FLUSH, REHYDRATE, PAUSE, PERSIST, PURGE, REGISTER]
     }
   })
+=======
+  reducer: persistedReducer
+>>>>>>> Merge branch 'development' into feature/react-dropzone
 });
 export const persistor = persistStore(store);
 
