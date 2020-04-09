@@ -1,4 +1,6 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import localForage from 'localforage';
 
 import FileInput from './components/FileInput';
 import PdfData from './components/PdfData';
@@ -8,31 +10,38 @@ import defaultPdfFile from './sampleFiles/sampleTables.pdf';
 
 import TemplateCreator from './components/TemplateCreator';
 
+import { loadFiles } from './feature/file/fileSlice';
+
 function App() {
+  const dispatch = useDispatch();
+  const files = useSelector(state => state.file.files);
   const [templateFile, setTemplateFile] = useState(defaultTemplateFile);
   const [pdfFile, setPdfFile] = useState(defaultPdfFile);
 
-  const handlePdfFileChange = e => {
-    const file = e.target.files[0];
-    if (file) {
-      file.arrayBuffer().then(buffer => {
-        setPdfFile(buffer);
-      });
-    } else {
-      setPdfFile(null);
+  useEffect(() => {
+    const fileRef = files[files.length - 1];
+    if (fileRef) {
+      switch (fileRef.type) {
+        case 'application/pdf':
+          localForage
+            .getItem(fileRef.key)
+            .then(file => file.arrayBuffer())
+            .then(setPdfFile);
+          break;
+        case 'application/json':
+          localForage
+            .getItem(fileRef.key)
+            .then(file => file.text())
+            .then(JSON.parse)
+            .then(setTemplateFile);
+          break;
+        default:
+          break;
+      }
     }
-  };
-  const handleTemplateFileChange = e => {
-    const uploadedFile = e.target.files[0];
-    if (uploadedFile) {
-      uploadedFile.text().then(text => {
-        setTemplateFile(JSON.parse(text));
-      });
-    } else {
-      setTemplateFile(null);
-    }
-  };
-
+  }, [files]);
+  const handlePdfFileChange = e => dispatch(loadFiles(e.target.files));
+  const handleTemplateFileChange = e => dispatch(loadFiles(e.target.files));
   return (
     <div className="App">
       <FileInput
@@ -70,6 +79,7 @@ function App() {
           invoice.json
         </a>
       </span>
+
       <PdfData pdf={pdfFile} template={templateFile} />
       <TemplateCreator file={pdfFile} />
     </div>
