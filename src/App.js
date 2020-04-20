@@ -81,10 +81,7 @@ function App() {
         </a>
       </span>
 
-<<<<<<< HEAD
-=======
       <MyDropzone />
->>>>>>> Create/Add MyDropzone component
       <PdfData pdf={pdfFile} template={templateFile} />
       <TemplateCreator file={pdfFile} />
     </div>
