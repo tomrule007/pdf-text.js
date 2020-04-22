@@ -1,14 +1,17 @@
 /* eslint-disable react/jsx-props-no-spreading */
 import React, { useCallback } from 'react';
+import { useDispatch } from 'react-redux';
 import { useDropzone } from 'react-dropzone';
+import { loadFiles } from '../../feature/file/fileSlice';
 
 import './MyDropzone.css';
 
 export default function MyDropzone() {
-  const onDrop = useCallback(acceptedFiles => {
-    // Do something with the files
-    console.log(acceptedFiles);
-  }, []);
+  const dispatch = useDispatch();
+  const onDrop = useCallback(
+    acceptedFiles => dispatch(loadFiles(acceptedFiles)),
+    []
+  );
   const { getRootProps, getInputProps, isDragActive } = useDropzone({ onDrop });
 
   return (
