@@ -8,7 +8,10 @@ function App() {
   const handlePdfFileChange = (e) =>
     e.target.files[0].arrayBuffer().then(setPdfFile);
   const handleTemplateFileChange = (e) =>
-    e.target.files[0].text().then(setTemplateFile);
+    e.target.files[0]
+      .text()
+      .then(JSON.parse)
+      .then(setTemplateFile);
 
   const fileBoxStyle = {
     border: '2px solid black',
