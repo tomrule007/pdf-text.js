@@ -11,6 +11,7 @@
     "deepmerge": "^4.2.2",
     "fabric": "^4.0.0-beta.6",
     "localforage": "^1.7.3",
+    "pdf-template-parse": "^0.0.3",
     "pdfjs-dist": "^2.2.228",
     "prop-types": "^15.7.2",
     "react": "^16.10.2",
