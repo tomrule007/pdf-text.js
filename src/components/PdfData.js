@@ -4,7 +4,7 @@ import pdfText from 'pdf-template-parse';
 import ReactTable from './ReactTable/ReactTable';
 import './PdfData.css';
 
-export default function PdfTable({ pdf, template }) {
+export default function PdfData({ pdf, template }) {
   const [pdfData, setPdfData] = useState({});
   useEffect(() => {
     if (pdf && template) pdfText(pdf, template).then(setPdfData);
@@ -39,7 +39,7 @@ export default function PdfTable({ pdf, template }) {
   );
 }
 
-PdfTable.propTypes = {
+PdfData.propTypes = {
   pdf: PropTypes.oneOfType([PropTypes.string, PropTypes.array]).isRequired,
   template: PropTypes.shape({
     options: PropTypes.object,
@@ -47,6 +47,6 @@ PdfTable.propTypes = {
   }),
 };
 
-PdfTable.defaultProps = {
+PdfData.defaultProps = {
   template: null,
 };
