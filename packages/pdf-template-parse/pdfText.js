@@ -4,7 +4,7 @@ import merge from 'deepmerge';
 import getPdfChars from './pdfChars';
 
 // toRows :: [a] -> [b]
-const toRows = chars => {
+const toRows = (chars) => {
   const rows = chars.reduce((acc, char) => {
     acc[char.y] = acc[char.y] === undefined ? [char] : [...acc[char.y], char];
     return acc;
@@ -13,16 +13,16 @@ const toRows = chars => {
   return Object.entries(rows);
 };
 
-const rowToColumns = columns => rowArray => {
+const rowToColumns = (columns) => (rowArray) => {
   const rowData = rowArray[1];
   const columnizedData = rowData.reduce((rowObj, char) => {
-    const { accessor } = columns.find(columnX => char.x < columnX.x);
+    const { accessor } = columns.find((columnX) => char.x < columnX.x);
     return merge(rowObj, { [accessor]: [char] });
   }, {});
 
   return columnizedData;
 };
-const mergeRows = mergeRule => rows => {
+const mergeRows = (mergeRule) => (rows) => {
   switch (mergeRule.direction) {
     case 'up':
       return rows.reduce((table, row) => {
@@ -38,10 +38,10 @@ const mergeRows = mergeRule => rows => {
       );
   }
 };
-const formatCell = chars =>
+const formatCell = (chars) =>
   chars.reduce((string, char) => string.concat(char.text), '');
 
-const parseTable = rules => pagesOfRows => {
+const parseTable = (rules) => (pagesOfRows) => {
   // for each page
   const pages = pagesOfRows.map(map(rowToColumns(rules.columns)));
 
@@ -54,7 +54,7 @@ const parseTable = rules => pagesOfRows => {
 
   // merge cell data to string
   // for each row
-  const formattedCells = mergedRows.map(row => {
+  const formattedCells = mergedRows.map((row) => {
     // for each column (key) in row
     const cellArray = Object.entries(row).map(([key, value]) => {
       return [key, formatCell(value)];
@@ -66,9 +66,9 @@ const parseTable = rules => pagesOfRows => {
   return { data: formattedCells, columns: rules.columns };
 };
 
-const valueParse = pagesOfChars => {
-  const pages = pagesOfChars.map(page => {
-    const rows = page.map(row => {
+const valueParse = (pagesOfChars) => {
+  const pages = pagesOfChars.map((page) => {
+    const rows = page.map((row) => {
       const chars = row[1];
       return formatCell(chars);
     });
@@ -76,11 +76,11 @@ const valueParse = pagesOfChars => {
   });
   return pages;
 };
-const isBetween = (start, stop) => value => {
+const isBetween = (start, stop) => (value) => {
   const [min, max] = start < stop ? [start, stop] : [stop, start];
   return value >= min && value <= max;
 };
-const getInbounds = rules => pagesOfChars => {
+const getInbounds = (rules) => (pagesOfChars) => {
   return pagesOfChars.map((page, index) => {
     const pageRules = rules[index] || rules.all;
     if (!pageRules) return [];
@@ -103,7 +103,8 @@ const selectParser = (type, rules) => {
 };
 
 export default async function pdfTextExtractor(src, template) {
-  const { captureList, options } = template;
+  const { captureList, options } =
+    typeof template === 'string' ? JSON.parse(template) : template;
   const pdf = await getPdfChars(src, options && options.charCodeOffset);
   const pagesOfChars = pdf.pages;
   const data = captureList.map(({ name, type, rules }) => {
