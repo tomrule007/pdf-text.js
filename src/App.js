@@ -1,23 +1,14 @@
 import React, { useState } from 'react';
-
 import PdfData from './components/PdfData';
-
-import defaultTemplateFile from './sampleFiles/sampleTables.json';
-import defaultPdfFile from './sampleFiles/sampleTables.pdf';
 
 function App() {
   const [templateFile, setTemplateFile] = useState(undefined);
   const [pdfFile, setPdfFile] = useState(undefined);
 
-  const handlePdfFileChange = (e) => {
-    console.log('pdf file', e.target.files[0].arrayBuffer().then(setPdfFile));
-  };
-  const handleTemplateFileChange = (e) => {
-    console.log(
-      'template file',
-      e.target.files[0].text().then(setTemplateFile)
-    );
-  };
+  const handlePdfFileChange = (e) =>
+    e.target.files[0].arrayBuffer().then(setPdfFile);
+  const handleTemplateFileChange = (e) =>
+    e.target.files[0].text().then(setTemplateFile);
 
   const fileBoxStyle = {
     border: '2px solid black',
@@ -37,12 +28,18 @@ function App() {
       >
         <div>
           <a
-            style={{ padding: '20px' }}
-            href={`${process.env.PUBLIC_URL}/pdfs/sampleTables.pdf`}
+            href={`${process.env.PUBLIC_URL}/pdfs/helloWorldDemo.pdf`}
             title="demo pdf file"
-            download="sampleTable.pdf"
+            download="helloWorldDemo.pdf"
           >
-            sampleTable.pdf
+            helloWorldDemo.pdf
+          </a>
+          <a
+            href={`${process.env.PUBLIC_URL}/pdfs/tableDemo.pdf`}
+            title="demo pdf file"
+            download="tableDemo.pdf"
+          >
+            tableDemo.pdf
           </a>
           <div style={fileBoxStyle}>
             <h3>PDF File</h3>
@@ -50,17 +47,24 @@ function App() {
           </div>
         </div>
         <div>
-          <h2>
+          <h1>
             PDF Template Parse <br /> Demo
-          </h2>
+          </h1>
         </div>
         <div>
           <a
-            href={`${process.env.PUBLIC_URL}/templates/sampleTables.json`}
+            href={`${process.env.PUBLIC_URL}/templates/helloWorldDemo.json`}
             title="demo template file"
-            download="sampleTable.json"
+            download="helloWorldDemo.json"
           >
-            sampleTable.json
+            helloWorldDemo.json
+          </a>
+          <a
+            href={`${process.env.PUBLIC_URL}/templates/tableDemo.json`}
+            title="demo template file"
+            download="tableDemo.json"
+          >
+            tableDemo.json
           </a>
           <div style={fileBoxStyle}>
             <h3>Template File</h3>
