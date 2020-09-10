@@ -4,5 +4,10 @@ td {
   border-collapse: collapse;
   border: 1px solid red;
   padding: 15px;
-  text-align: left;
+  text-align: center;
+  vertical-align: middle;
+}
+
+table {
+  width: 100%;
 }

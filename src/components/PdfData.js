@@ -12,11 +12,9 @@ export default function PdfTable({ pdf, template }) {
 
   return (
     <div>
-      <h2>Parsed Values:</h2>
       <table>
         <thead>
           <tr>
-            <th>type</th>
             <th>key</th>
             <th>value</th>
           </tr>
@@ -24,7 +22,6 @@ export default function PdfTable({ pdf, template }) {
         <tbody>
           {Object.entries(pdfData).map(([key, value]) => (
             <tr key={key}>
-              <td>{value && value.columns ? 'table' : 'value'}</td>
               <td>{key}</td>
 
               {value && value.columns ? (
@@ -32,7 +29,7 @@ export default function PdfTable({ pdf, template }) {
                   <ReactTable data={value.data} columns={value.columns} />
                 </td>
               ) : (
-                <td>{`[ ${value.map(item => `"${item}"`).join(' , ')} ]`}</td>
+                <td>{`[ ${value.map((item) => `"${item}"`).join(' , ')} ]`}</td>
               )}
             </tr>
           ))}
@@ -46,10 +43,10 @@ PdfTable.propTypes = {
   pdf: PropTypes.oneOfType([PropTypes.string, PropTypes.array]).isRequired,
   template: PropTypes.shape({
     options: PropTypes.object,
-    captureList: PropTypes.array
-  })
+    captureList: PropTypes.array,
+  }),
 };
 
 PdfTable.defaultProps = {
-  template: null
+  template: null,
 };
