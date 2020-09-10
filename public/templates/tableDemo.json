@@ -23,7 +23,7 @@
       }
     },
     {
-      "name": "From javascript arrays",
+      "name": "table2",
       "type": "table",
       "rules": {
         "all": {
@@ -45,7 +45,7 @@
       }
     },
     {
-      "name": "From HTML with CSS",
+      "name": "table3",
       "type": "table",
       "rules": {
         "all": {
@@ -67,7 +67,7 @@
       }
     },
     {
-      "name": "tableTwoTitle",
+      "name": "title2",
       "type": "value",
       "rules": {
         "all": {
@@ -81,7 +81,7 @@
       }
     },
     {
-      "name": "tableThreeTitle",
+      "name": "title3",
       "type": "value",
       "rules": {
         "all": {
